@@ -1,12 +1,19 @@
 import { promises as fs } from "node:fs";
+import os from "node:os";
 import path from "node:path";
 import { storedReportSchema } from "@/lib/schema";
 import type { GeneratedReport, StoredReport, TraderMode } from "@/types/report";
 
-const CACHE_DIR = path.join(process.cwd(), ".cache", "reports");
+/** Writable on Vercel serverless (`/var/task` is read-only). Local dev uses project `.cache`. */
+function reportsCacheDir(): string {
+  if (process.env.VERCEL) {
+    return path.join(os.tmpdir(), "twickers-reports");
+  }
+  return path.join(process.cwd(), ".cache", "reports");
+}
 
 function cacheFile(mode: TraderMode): string {
-  return path.join(CACHE_DIR, `${mode}.json`);
+  return path.join(reportsCacheDir(), `${mode}.json`);
 }
 
 export async function getStoredReport(mode: TraderMode): Promise<StoredReport | null> {
@@ -20,7 +27,7 @@ export async function getStoredReport(mode: TraderMode): Promise<StoredReport | 
 }
 
 export async function saveReport(report: GeneratedReport): Promise<StoredReport> {
-  await fs.mkdir(CACHE_DIR, { recursive: true });
+  await fs.mkdir(reportsCacheDir(), { recursive: true });
   const payload: StoredReport = {
     report,
     updatedAt: new Date().toISOString(),

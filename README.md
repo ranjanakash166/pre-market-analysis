@@ -14,6 +14,10 @@ npm install
 npm run dev
 ```
 
+## Hosting on Vercel
+
+Report JSON is stored on disk. On Vercel (`VERCEL=1`), files go under the server **temp** directory (writable), not under the project folder. That storage is **ephemeral**: it may disappear on cold starts or differ between instances. For durable, shared storage, use Vercel KV, Blob, Postgres, or similar later.
+
 ## Endpoints
 
 - `GET /api/report?mode=A|B|C` - fetch latest cached report
