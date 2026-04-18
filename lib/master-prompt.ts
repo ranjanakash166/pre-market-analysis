@@ -1,56 +1,34 @@
-export const MASTER_PROMPT = `
-=== INDIA MORNING MARKET BRIEFING — HOLY GRAIL MASTER PROMPT ===
-APP CONTEXT OVERRIDE:
-Mode is already selected by the application as A, B, or C.
-Do not ask the user the opening question in this app workflow.
-Immediately generate only the selected route output.
+import { HOLY_GRAIL_BODY } from "./master-prompt-holy-grail";
 
-CRITICAL DATA RULES:
-- Never fabricate any number.
-- The app may overwrite Nifty 50 / Bank Nifty classical pivot rows (PP, R1–R3, S1–S3) in Levels tabs with server-computed values from prior EOD; still output coherent placeholders if needed.
-- Fetch live web data first where available.
-- Use previous close only if live data is unavailable/stale.
-- Every number must include freshness label and source link.
-- Every news item must include direct article link and publish time.
-- Keep language plain English and concise.
+/**
+ * API/runtime layer prepended to the full canonical Holy Grail text.
+ * The body matches the PDF / desktop prompt; overrides here resolve JSON-only, no-chat workflow.
+ */
+const MASTER_PROMPT_API_ADAPTER = `
+=== API RUNTIME OVERRIDES (read first; these supersede conflicting instructions below) ===
 
-SOURCE PRIORITY:
-1) NSE India
-2) BSE India
-3) Google Finance
-4) Yahoo Finance
-5) Moneycontrol / Investing / Trendlyne
+The application has already selected trader mode A, B, or C. Ignore the "CRITICAL INSTRUCTION" block that asks for only the opening question: do NOT print the greeting, do NOT wait for a reply, and do NOT stop after the question. Generate the full report for the selected mode immediately.
 
-FRESHNESS LABELS:
-- Within 30 minutes: [Live]
-- 30 minutes to 3 hours: [Delayed HH:MM IST]
-- Older than 3 hours: fallback to [Prev Close: DD MMM YYYY]
+Output: ONE JSON object only, matching the Output Contract supplied later in the prompt. No HTML document, no Claude chat-only interactive widget, no wrapping the entire answer in markdown code fences.
 
-NEWS RULES:
-- Include only timestamped, market-relevant news.
-- Prioritize Reuters, Moneycontrol, ET, Mint, Business Standard,
-  Bloomberg India, NDTV Profit, Zee Business, NSE announcements.
-- Format each item with what happened, market impact, direct link, published time.
+Map each PDF route tab to sections[] with stable id and matching title:
+- Route A: id opening-brief | levels | technicals | fno-pulse | commodities | news | verdict
+- Route B: id opening-brief | global-markets | sectors | fii-flows | commodities | news | verdict
+- Route C: id opening-brief | global-markets | india-levels | fno-pulse | fii-flows | commodities-actions | news | verdict
 
-ROUTE A (INTRADAY):
-- Build 7 tabs: Opening Brief, Levels, Technicals, F&O Pulse, Commodities, News, Verdict.
-- Include GIFT Nifty, Nifty, Sensex, Bank Nifty, India VIX, pivots, DMA, RSI, MACD,
-  option chain metrics (PCR, Max Pain, top CE/PE OI), USDINR, crude, metals.
+Styling: use each metric's tone field (positive | negative | neutral) instead of describing green/red/amber in prose. News must use happened, impact, publishedAt, source.url (no markdown link-only lines).
 
-ROUTE B (SWING):
-- Build 7 tabs: Opening Brief, Global Markets, Sectors, FII Flows, Commodities, News, Verdict.
-- Include weekly trend, sector ranking, FII/DII flows, global indices, IPO/corporate actions where available.
+GROUND TRUTH: If LIVE_INDICES_SERVER_FETCH (or equivalent) appears in the surrounding prompt, treat those figures as authoritative for those symbols everywhere in the JSON, including verdict.
 
-ROUTE C (FULL):
-- Build 8 tabs: Opening Brief, Global Markets, India Levels, F&O Pulse, FII Flows,
-  Commodities & Actions, News, Verdict.
-- Combine all Route A and B requirements plus broader global/macroeconomic context.
+Pivots: The server may overwrite Nifty 50 / Bank Nifty classical pivot rows (PP, R1–R3, S1–S3) in Levels-related sections with server-computed prior-EOD values; still emit coherent placeholder metrics for those rows.
 
-OUTPUT REQUIREMENTS:
-- Return strict JSON only.
-- Ensure every metric has label, value, freshness, tone, and source.
-- Ensure every news item has tag, happened, impact, publishedAt, and source.
-- Add disclaimer lines:
-  1) This briefing is for education and market awareness only.
-  2) Not for trading or investment decisions.
-`;
+No live browsing in this API: follow the canonical source order and verification rules; use N/A plus an official link when a value cannot be justified. Never fabricate numbers.
+
+Disclaimer: populate disclaimer as a JSON string array with at least the two standard lines; include the SEBI advisory line from the canonical footer when appropriate.
+
+─────────────────────────────────────────────────────
+CANONICAL MASTER PROMPT (full text follows)
+─────────────────────────────────────────────────────
+`.trim();
+
+export const MASTER_PROMPT = `${MASTER_PROMPT_API_ADAPTER}\n\n${HOLY_GRAIL_BODY}`;

@@ -1,6 +1,7 @@
 "use client";
 
 import { signIn } from "next-auth/react";
+import { SITE_NAME } from "@/lib/branding";
 
 export default function LoginPage() {
   return (
@@ -12,10 +13,10 @@ export default function LoginPage() {
 
       <div className="w-full max-w-md">
         <div className="mb-8 text-center">
-          <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.28em] text-amber-500/90">Account</p>
+          <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.28em] text-amber-500/90">{SITE_NAME}</p>
           <h1 className="text-3xl font-bold tracking-tight text-white">Sign in</h1>
           <p className="mt-3 text-sm leading-relaxed text-slate-400">
-            Optional sign-in for future member-only views. Browse the dashboard without an account anytime.
+            Optional sign-in to {SITE_NAME}. You can still use the pre-market dashboard without an account.
           </p>
         </div>
 

@@ -2,7 +2,7 @@ import type { TraderMode } from "@/types/report";
 
 const BASE_PROMPT = `
 You are generating a pre-market analysis report for India markets.
-Follow the user-provided master prompt policy and route instructions exactly.
+Follow the Master Prompt (canonical policy + API overrides) and route instructions exactly.
 Return ONLY strict JSON (no markdown, no code fences, no prose outside JSON).
 Every numeric/news item must include freshness and source fields.
 Keep explanations short, plain English, one sentence where possible.

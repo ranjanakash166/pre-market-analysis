@@ -1,6 +1,6 @@
-# Pre-Market Analysis App
+# Twickers
 
-Next.js app that generates A/B/C India pre-market reports using frontier AI models.
+**Twickers** is a markets clarity product. This repository ships the first feature: an **India pre-market briefing** — A/B/C trader modes, AI-generated reports, live index enrichment, and cached reads.
 
 ## Setup
 

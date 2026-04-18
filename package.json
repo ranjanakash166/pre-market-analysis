@@ -1,7 +1,7 @@
 {
   "name": "pre-market-analysis",
   "version": "1.0.0",
-  "description": "Pre-market analysis dashboard powered by frontier AI models",
+  "description": "Twickers — India pre-market briefing (A/B/C modes) powered by frontier AI models",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -45,6 +45,7 @@
     "autoprefixer": "^10.5.0",
     "eslint": "^9.39.4",
     "eslint-config-next": "^16.2.3",
+    "pdf-parse": "^2.4.5",
     "postcss": "^8.5.10",
     "tailwindcss": "^4.2.2",
     "typescript": "^6.0.2"

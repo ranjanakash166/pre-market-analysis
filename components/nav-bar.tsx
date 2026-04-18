@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { LayoutDashboard } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
+import { NAV_FEATURE_LABEL, SITE_NAME } from "@/lib/branding";
 
 function BrandMark() {
   return (
@@ -11,7 +12,7 @@ function BrandMark() {
       className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-amber-400 via-orange-500 to-rose-500 text-sm font-bold text-slate-950 shadow-lg shadow-amber-500/25"
       aria-hidden
     >
-      P
+      T
     </span>
   );
 }
@@ -32,8 +33,13 @@ export function NavBar() {
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-6 px-4 md:px-8">
         <Link href="/" className="group flex min-w-0 items-center gap-3 transition">
           <BrandMark />
-          <span className="truncate text-[15px] font-semibold tracking-tight text-white group-hover:text-amber-100">
-            Pre-Market Analysis
+          <span className="flex min-w-0 flex-col leading-tight">
+            <span className="truncate text-[15px] font-semibold tracking-tight text-white group-hover:text-amber-100">
+              {SITE_NAME}
+            </span>
+            <span className="truncate text-[11px] font-medium uppercase tracking-[0.18em] text-slate-500 group-hover:text-slate-400">
+              {NAV_FEATURE_LABEL}
+            </span>
           </span>
         </Link>
 

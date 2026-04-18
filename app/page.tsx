@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { RefreshCw } from "lucide-react";
+import { FEATURE_PRE_MARKET, SITE_NAME, SITE_TAGLINE } from "@/lib/branding";
 import { ReportTabs } from "@/components/report-tabs";
 import type { GeneratedReport, TraderMode } from "@/types/report";
 
@@ -63,13 +64,11 @@ export default function HomePage() {
   return (
     <main className="mx-auto max-w-7xl px-4 pb-16 pt-8 md:px-8 md:pt-10">
       <div className="mb-10 md:mb-12">
-        <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.28em] text-amber-500/90">Live briefing</p>
-        <h1 className="mb-3 text-3xl font-bold tracking-tight text-white md:text-4xl">
-          Pre-market intelligence
-        </h1>
+        <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.28em] text-amber-500/90">{SITE_NAME}</p>
+        <h1 className="mb-3 text-3xl font-bold tracking-tight text-white md:text-4xl">{FEATURE_PRE_MARKET}</h1>
         <p className="max-w-2xl text-sm leading-relaxed text-slate-400 md:text-[15px]">
-          Switch trader modes, pull cached reports instantly, or regenerate with AI when you need a fresh read on
-          indices, volatility, and flow—built for clarity, not noise.
+          {SITE_TAGLINE} Switch A/B/C modes, load cached briefings, or regenerate with AI for indices, volatility, and
+          flow—clear context, not noise.
         </p>
       </div>
 

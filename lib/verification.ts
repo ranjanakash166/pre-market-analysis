@@ -18,6 +18,11 @@ const ALLOWED_DOMAINS = [
   "timesofindia.indiatimes.com",
   "groww.in",
   "stooq.com",
+  "mcxindia.com",
+  "5paisa.com",
+  "tickertape.in",
+  "screener.in",
+  "upstox.com",
 ];
 
 const CANONICAL_BY_SOURCE: Record<string, string> = {
