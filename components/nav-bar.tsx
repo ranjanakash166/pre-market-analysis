@@ -91,12 +91,14 @@ export function NavBar() {
           ) : null}
 
           {!onLoginRoute && status === "unauthenticated" ? (
-            <Link
-              href="/login"
-              className="rounded-full bg-gradient-to-r from-amber-500 to-orange-600 px-4 py-2 text-sm font-semibold text-slate-950 shadow-lg shadow-amber-500/25 transition hover:brightness-105 active:brightness-95"
+            <button
+              type="button"
+              disabled
+              title="Sign-in will be live soon so you can log in and get more useful insights."
+              className="cursor-not-allowed rounded-full border border-white/[0.08] bg-white/[0.04] px-4 py-2 text-sm font-semibold text-slate-500 ring-1 ring-white/[0.06]"
             >
-              Sign in
-            </Link>
+              Sign in — coming soon
+            </button>
           ) : null}
 
           {status === "loading" && !onLoginRoute ? (
