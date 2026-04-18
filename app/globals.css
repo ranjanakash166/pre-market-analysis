@@ -1,0 +1,37 @@
+@import "tailwindcss";
+
+:root {
+  --bg-root: #020617;
+  --surface: rgb(15 23 42 / 0.65);
+  --surface-solid: rgb(15 23 42 / 0.92);
+  --border-subtle: rgb(148 163 184 / 0.14);
+  --accent: #fb923c;
+  --accent-deep: #ea580c;
+  --accent-glow: rgb(251 146 60 / 0.22);
+  --cyan-accent: rgb(34 211 238 / 0.85);
+}
+
+body {
+  background-color: var(--bg-root);
+  background-image:
+    radial-gradient(ellipse 110% 70% at 50% -25%, rgb(251 146 60 / 0.14), transparent 52%),
+    radial-gradient(ellipse 55% 45% at 100% -5%, rgb(34 211 238 / 0.09), transparent 48%),
+    radial-gradient(ellipse 50% 35% at 0% 15%, rgb(139 92 246 / 0.06), transparent 45%),
+    linear-gradient(180deg, #020617 0%, #030712 55%, #020617 100%);
+  color: #f8fafc;
+  min-height: 100vh;
+}
+
+/* Ambient grid — subtle depth without clutter */
+body::before {
+  content: "";
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  background-image:
+    linear-gradient(rgb(148 163 184 / 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(148 163 184 / 0.035) 1px, transparent 1px);
+  background-size: 44px 44px;
+  mask-image: radial-gradient(ellipse 85% 65% at 50% 18%, black, transparent 72%);
+}
