@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { LayoutDashboard } from "lucide-react";
-import { signOut, useSession } from "next-auth/react";
 import { NAV_FEATURE_LABEL, SITE_NAME } from "@/lib/branding";
 
 function BrandMark() {
@@ -19,12 +18,8 @@ function BrandMark() {
 
 export function NavBar() {
   const pathname = usePathname();
-  const { data: session, status } = useSession();
   const onLoginRoute = pathname === "/login";
   const onDashboard = pathname === "/";
-
-  const displayName =
-    session?.user?.name ?? session?.user?.email?.split("@")[0] ?? "Signed in";
 
   return (
     <nav className="sticky top-0 z-50 border-b border-white/[0.08] bg-[rgb(2_6_23_/0.82)] backdrop-blur-xl backdrop-saturate-150">
@@ -58,51 +53,13 @@ export function NavBar() {
             </Link>
           ) : null}
 
-          {!onLoginRoute && status === "authenticated" ? (
-            <>
-              <div className="hidden h-8 w-px bg-white/10 sm:block" />
-
-              {session?.user?.image ? (
-                // eslint-disable-next-line @next/next/no-img-element -- external OAuth avatar URLs
-                <img
-                  src={session.user.image}
-                  alt=""
-                  className="hidden h-9 w-9 rounded-full border border-white/10 shadow-md sm:block"
-                  width={36}
-                  height={36}
-                />
-              ) : null}
-
-              <span
-                className="hidden max-w-[9rem] truncate text-sm text-slate-300 lg:inline"
-                title={session?.user?.email ?? undefined}
-              >
-                {displayName}
-              </span>
-
-              <button
-                type="button"
-                onClick={() => signOut({ callbackUrl: "/" })}
-                className="rounded-full border border-white/[0.1] bg-white/[0.06] px-4 py-2 text-sm font-medium text-slate-200 transition hover:border-white/[0.15] hover:bg-white/[0.1]"
-              >
-                Sign out
-              </button>
-            </>
-          ) : null}
-
-          {!onLoginRoute && status === "unauthenticated" ? (
-            <button
-              type="button"
-              disabled
-              title="Sign-in will be live soon so you can log in and get more useful insights."
-              className="cursor-not-allowed rounded-full border border-white/[0.08] bg-white/[0.04] px-4 py-2 text-sm font-semibold text-slate-500 ring-1 ring-white/[0.06]"
+          {!onLoginRoute ? (
+            <Link
+              href="/login"
+              className="rounded-full bg-gradient-to-r from-amber-500 to-orange-600 px-4 py-2 text-sm font-semibold text-slate-950 shadow-lg shadow-amber-500/25 transition hover:brightness-105 active:brightness-95"
             >
-              Sign in — coming soon
-            </button>
-          ) : null}
-
-          {status === "loading" && !onLoginRoute ? (
-            <span className="text-xs text-slate-500">Loading…</span>
+              Sign in
+            </Link>
           ) : null}
         </div>
       </div>
