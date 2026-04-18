@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Plus_Jakarta_Sans } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 import { auth } from "@/auth";
 import { FEATURE_PRE_MARKET, SITE_NAME, SITE_TAGLINE } from "@/lib/branding";
 import { NavBar } from "@/components/nav-bar";
@@ -43,6 +44,7 @@ export default async function RootLayout({
           <NavBar />
           <div className="relative z-10">{children}</div>
         </SessionProvider>
+        <Analytics />
       </body>
     </html>
   );
