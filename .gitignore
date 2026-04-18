@@ -18,7 +18,8 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 
-# env
+# env — never commit real keys (.env.local, .env.production.local, etc.)
+# Only .env.example is tracked as a template.
 .env*
 !.env.example
 
