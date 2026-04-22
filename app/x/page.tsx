@@ -134,67 +134,61 @@ export default function XFeedPage() {
           Market signals from monitored accounts
         </h1>
         <p className="max-w-2xl text-sm leading-relaxed text-slate-400">
-          Ingestion runs on a schedule; this page reads the latest cached posts and AI commentary from your database —
-          not the live X API on every page load.
+          Curated market commentary from selected X accounts, with concise analysis to help you scan the signal faster.
         </p>
       </header>
 
       {dbError ? (
         <section className="rounded-2xl border border-amber-500/25 bg-amber-500/[0.07] p-6 text-sm text-amber-100 ring-1 ring-amber-500/20">
-          <p className="font-medium">Database not ready</p>
-          <p className="mt-2 text-amber-100/80">{dbError}</p>
+          <p className="font-medium">Data is temporarily unavailable</p>
+          <p className="mt-2 text-amber-100/80">
+            We are having trouble loading updates right now. Please try again shortly.
+          </p>
         </section>
       ) : null}
 
-      <div className="grid gap-8 lg:grid-cols-[minmax(0,320px)_1fr]">
-        <aside className="space-y-4">
-          <h2 className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Accounts</h2>
-          <div className="space-y-2">
-            {loadingAccounts ? (
-              <p className="text-sm text-slate-500">Loading…</p>
-            ) : accounts && accounts.length === 0 ? (
-              <p className="text-sm text-slate-400">
-                No rows in <code className="rounded bg-white/5 px-1.5 py-0.5 text-slate-200">monitored_accounts</code>.
-                Set <code className="rounded bg-white/5 px-1.5 py-0.5">X_MONITOR_HANDLES</code> and run the sync cron.
-              </p>
-            ) : (
-              accounts?.map((a) => {
+      <section className="space-y-8">
+        <div className="space-y-3">
+          <h2 className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Sources</h2>
+          {loadingAccounts ? (
+            <p className="text-sm text-slate-500">Loading…</p>
+          ) : accounts && accounts.length === 0 ? (
+            <p className="text-sm text-slate-400">No sources are available yet. Please check back shortly.</p>
+          ) : (
+            <div className="flex flex-wrap gap-2">
+              {accounts?.map((a) => {
                 const active = a.id === selectedId;
                 return (
                   <button
                     key={a.id}
                     type="button"
                     onClick={() => setSelectedId(a.id)}
-                    className={`flex w-full flex-col items-start gap-1 rounded-xl border px-4 py-3 text-left transition ${
+                    className={`rounded-full border px-3 py-1.5 text-sm font-medium transition ${
                       active
-                        ? "border-amber-500/40 bg-amber-500/[0.07] ring-1 ring-amber-500/30"
-                        : "border-white/10 bg-white/[0.03] hover:border-white/15"
+                        ? "border-amber-500/45 bg-amber-500/[0.10] text-amber-100 ring-1 ring-amber-500/30"
+                        : "border-white/12 bg-white/[0.03] text-slate-300 hover:border-white/20 hover:text-slate-100"
                     }`}
                   >
-                    <span className="text-sm font-semibold text-white">@{a.handle}</span>
-                    <span className="text-[11px] uppercase tracking-wide text-slate-500">{a.status}</span>
-                    {a.lastError ? (
-                      <span className="text-xs text-rose-300/90">Last error: {a.lastError}</span>
-                    ) : null}
+                    @{a.handle}
                   </button>
                 );
-              })
-            )}
-          </div>
-        </aside>
+              })}
+            </div>
+          )}
+          {selected?.lastError ? <p className="text-xs text-rose-300/90">Updates may be delayed right now.</p> : null}
+        </div>
 
-        <section className="space-y-8">
+        <div className="space-y-8">
           <div className="rounded-2xl border border-white/10 bg-white/[0.02] p-6 ring-1 ring-white/5">
             <div className="flex items-start justify-between gap-4">
               <div>
                 <h2 className="flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.16em] text-slate-400">
                   <Sparkles className="h-4 w-4 text-amber-400" aria-hidden />
-                  AI synthesis
+                  Market summary
                 </h2>
                 {selected ? (
                   <p className="mt-1 text-xs text-slate-500">
-                    @{selected.handle} · latest batch analysis
-                    {analysis?.model ? ` · ${analysis.model}` : ""}
+                    @{selected.handle} · latest update
                   </p>
                 ) : null}
               </div>
@@ -204,7 +198,7 @@ export default function XFeedPage() {
             {!analysis ? (
               <p className="mt-4 text-sm text-slate-400">
                 {selected
-                  ? "No analysis yet. After new posts are ingested, the sync job will generate a structured summary."
+                  ? "No summary is available yet. New updates will appear automatically."
                   : "Select an account."}
               </p>
             ) : (
@@ -215,13 +209,13 @@ export default function XFeedPage() {
           <div>
             <h2 className="mb-4 flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.16em] text-slate-400">
               <MessageCircle className="h-4 w-4 text-slate-300" aria-hidden />
-              Cached posts
+              Latest posts
             </h2>
 
             {loadingTweets && tweets.length === 0 ? (
               <p className="text-sm text-slate-500">Loading posts…</p>
             ) : tweets.length === 0 ? (
-              <p className="text-sm text-slate-400">No tweets stored yet for this account.</p>
+              <p className="text-sm text-slate-400">No posts available for this source yet.</p>
             ) : (
               <ul className="space-y-4">
                 {tweets.map((t) => (
@@ -272,13 +266,13 @@ export default function XFeedPage() {
                   disabled={loadingTweets}
                   className="rounded-full border border-white/15 bg-white/[0.04] px-4 py-2 text-sm font-medium text-slate-100 transition hover:border-white/25 disabled:opacity-60"
                 >
-                  {loadingTweets ? "Loading…" : "Load older"}
+                  {loadingTweets ? "Loading…" : "Show older posts"}
                 </button>
               </div>
             ) : null}
           </div>
-        </section>
-      </div>
+        </div>
+      </section>
     </main>
   );
 }
@@ -315,12 +309,6 @@ function AnalysisPanel({ analysis }: { analysis: XFeedAnalysisPublic }) {
           <BulletList title="Ideas (hypotheses)" items={ideas} />
         </div>
 
-        {analysis.citedTweetIds.length > 0 ? (
-          <p className="text-[11px] text-slate-500">
-            Cited tweet ids: {analysis.citedTweetIds.slice(0, 12).join(", ")}
-            {analysis.citedTweetIds.length > 12 ? "…" : ""}
-          </p>
-        ) : null}
       </div>
     );
   }
