@@ -1,21 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
+import { isCronAuthorized } from "@/lib/cron-auth";
 import { generateReport } from "@/lib/ai";
 import { saveReport } from "@/lib/store";
 import type { TraderMode } from "@/types/report";
 
 const MODES: TraderMode[] = ["A", "B", "C"];
 
-function isAuthorized(request: NextRequest): boolean {
-  const token = request.headers.get("x-cron-token");
-  const expected = process.env.CRON_SECRET;
-  if (!expected) {
-    return false;
-  }
-  return token === expected;
-}
-
 export async function POST(request: NextRequest) {
-  if (!isAuthorized(request)) {
+  if (!isCronAuthorized(request)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard } from "lucide-react";
+import { LayoutDashboard, Radio } from "lucide-react";
 import { NAV_FEATURE_LABEL, SITE_NAME } from "@/lib/branding";
 
 function BrandMark() {
@@ -20,6 +20,7 @@ export function NavBar() {
   const pathname = usePathname();
   const onLoginRoute = pathname === "/login";
   const onDashboard = pathname === "/";
+  const onXFeed = pathname === "/x";
 
   return (
     <nav className="sticky top-0 z-50 border-b border-white/[0.08] bg-[rgb(2_6_23_/0.82)] backdrop-blur-xl backdrop-saturate-150">
@@ -50,6 +51,20 @@ export function NavBar() {
             >
               <LayoutDashboard className="h-4 w-4 opacity-80" aria-hidden />
               <span className="hidden sm:inline">Dashboard</span>
+            </Link>
+          ) : null}
+
+          {!onLoginRoute ? (
+            <Link
+              href="/x"
+              className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-medium transition ${
+                onXFeed
+                  ? "bg-white/[0.07] text-amber-100 ring-1 ring-amber-500/25"
+                  : "text-slate-400 hover:bg-white/[0.05] hover:text-slate-200"
+              }`}
+            >
+              <Radio className="h-4 w-4 opacity-80" aria-hidden />
+              <span className="hidden sm:inline">X feed</span>
             </Link>
           ) : null}
 

@@ -295,3 +295,26 @@ If fresh data is unavailable, return N/A with source link instead of old values.
   }
   return finalizeEnrichedReport(secondPass, live);
 }
+
+/** Secondary features (e.g. X feed analysis): same provider selection and JSON contract as reports. */
+export async function generateJsonTextFromPrompt(fullPrompt: string): Promise<string> {
+  const backend = resolveAiBackend();
+  const rawText =
+    backend === "anthropic"
+      ? await generateJsonFromAnthropic(fullPrompt)
+      : await generateJsonFromGoogle(fullPrompt);
+  return extractJsonObjectText(rawText);
+}
+
+/** Human-readable model id for logging / storage (not an API guarantee). */
+export function describeActiveAiModel(): string {
+  const backend = resolveAiBackend();
+  if (backend === "anthropic") {
+    return (
+      process.env.ANTHROPIC_MODEL?.trim() ||
+      process.env.CLAUDE_MODEL?.trim() ||
+      "claude-sonnet-4-6"
+    );
+  }
+  return process.env.AI_MODEL ?? process.env.GEMINI_MODEL ?? "gemini-2.5-flash";
+}
