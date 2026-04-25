@@ -1,12 +1,14 @@
 "use client";
 
-import { FormEvent, useMemo, useState } from "react";
+import { FormEvent, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { signIn } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
 import { SITE_NAME } from "@/lib/branding";
 
 export default function LoginPage() {
+  const { status } = useSession();
   const searchParams = useSearchParams();
   const initialTab = searchParams.get("tab") === "register" ? "register" : "login";
   const [tab, setTab] = useState<"login" | "register">(initialTab);
@@ -32,6 +34,12 @@ export default function LoginPage() {
     }
     return "Google sign-in failed. Please try again.";
   }, [authError]);
+
+  useEffect(() => {
+    if (status === "authenticated") {
+      window.location.href = "/dashboard";
+    }
+  }, [status]);
 
   async function continueWithGoogle() {
     setLoadingGoogle(true);
