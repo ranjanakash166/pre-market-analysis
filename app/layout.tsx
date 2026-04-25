@@ -14,21 +14,35 @@ const sans = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://www.twickers.xyz"),
   title: {
     default: `${SITE_NAME} — AI pre-market intelligence`,
     template: `%s · ${SITE_NAME}`,
   },
   description: `${SITE_NAME} helps traders prepare with AI-powered pre-market briefings, A/B/C modes, and source-backed market context.`,
+  alternates: {
+    canonical: "/",
+  },
   openGraph: {
+    url: "https://www.twickers.xyz",
     title: `${SITE_NAME} — AI pre-market intelligence`,
     description: `${FEATURE_PRE_MARKET} with actionable insights, scenarios, and source-backed context.`,
     siteName: SITE_NAME,
     type: "website",
+    images: [
+      {
+        url: "/opengraph-image",
+        width: 1200,
+        height: 630,
+        alt: `${SITE_NAME} — AI pre-market intelligence`,
+      },
+    ],
   },
   twitter: {
-    card: "summary",
+    card: "summary_large_image",
     title: `${SITE_NAME} — AI pre-market intelligence`,
     description: `${FEATURE_PRE_MARKET}. ${SITE_TAGLINE}`,
+    images: ["/twitter-image"],
   },
 };
 
