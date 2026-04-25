@@ -4,6 +4,7 @@ import { auth } from "@/auth";
 import {
   createPayment,
   getPlanByCode,
+  setPlanMetadata,
   toRazorpayUnixSeconds,
   upsertSubscription,
 } from "@/lib/billing-db";
@@ -11,6 +12,7 @@ import {
   createRazorpayOrder,
   createRazorpayPlan,
   createRazorpaySubscription,
+  getRazorpayKeyId,
   mapIntervalToRazorpayPeriod,
 } from "@/lib/razorpay";
 
@@ -55,6 +57,7 @@ export async function POST(request: NextRequest) {
       });
       return NextResponse.json({
         mode: "one_time",
+        razorpayKeyId: getRazorpayKeyId(),
         razorpayOrderId: order.id,
         amountPaise: plan.amountPaise,
         currency: plan.currency,
@@ -65,17 +68,27 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Recurring plan interval not configured" }, { status: 400 });
     }
 
-    const rpPlan = await createRazorpayPlan({
-      period: mapIntervalToRazorpayPeriod(plan.intervalUnit),
-      interval: plan.intervalCount,
-      itemName: plan.name,
-      amountPaise: plan.amountPaise,
-      currency: plan.currency,
-      description: plan.description ?? undefined,
-    });
+    const existingPlanId =
+      typeof plan.metadata?.razorpayPlanId === "string" ? plan.metadata.razorpayPlanId : null;
+    const rpPlanId =
+      existingPlanId ??
+      (
+        await createRazorpayPlan({
+          period: mapIntervalToRazorpayPeriod(plan.intervalUnit),
+          interval: plan.intervalCount,
+          itemName: plan.name,
+          amountPaise: plan.amountPaise,
+          currency: plan.currency,
+          description: plan.description ?? undefined,
+        })
+      ).id;
+
+    if (!existingPlanId) {
+      await setPlanMetadata(plan.id, { ...plan.metadata, razorpayPlanId: rpPlanId });
+    }
 
     const rpSub = await createRazorpaySubscription({
-      planId: rpPlan.id,
+      planId: rpPlanId,
       notes: { planCode: plan.code, userId },
     });
 
@@ -86,7 +99,7 @@ export async function POST(request: NextRequest) {
       status: rpSub.status === "active" ? "active" : "created",
       currentPeriodStart: rpSub.current_start ? new Date(rpSub.current_start * 1000) : null,
       currentPeriodEnd: rpSub.current_end ? new Date(rpSub.current_end * 1000) : null,
-      metadata: { razorpayPlanId: rpPlan.id, planCode: plan.code },
+      metadata: { razorpayPlanId: rpPlanId, planCode: plan.code },
     });
 
     await createPayment({
@@ -106,6 +119,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({
       mode: "recurring",
+      razorpayKeyId: getRazorpayKeyId(),
       razorpaySubscriptionId: rpSub.id,
       amountPaise: plan.amountPaise,
       currency: plan.currency,

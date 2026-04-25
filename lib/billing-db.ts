@@ -16,6 +16,7 @@ export type BillingPlan = {
   intervalUnit: "day" | "week" | "month" | "year" | null;
   intervalCount: number | null;
   active: boolean;
+  metadata: Record<string, unknown>;
 };
 
 type BillingPlanRow = {
@@ -30,6 +31,7 @@ type BillingPlanRow = {
   interval_unit: "day" | "week" | "month" | "year" | null;
   interval_count: number | null;
   active: boolean;
+  metadata: unknown;
 };
 
 function requireSql(): Sql {
@@ -53,6 +55,7 @@ function mapPlan(r: BillingPlanRow): BillingPlan {
     intervalUnit: r.interval_unit,
     intervalCount: r.interval_count,
     active: r.active,
+    metadata: (r.metadata && typeof r.metadata === "object" ? (r.metadata as Record<string, unknown>) : {}),
   };
 }
 
@@ -122,7 +125,7 @@ export async function ensureDefaultBillingPlans(): Promise<void> {
 export async function listActivePlans(): Promise<BillingPlan[]> {
   const sql = requireSql();
   const rows = (await sql`
-    SELECT id, code, name, description, tier_rank, amount_paise, currency, billing_type, interval_unit, interval_count, active
+    SELECT id, code, name, description, tier_rank, amount_paise, currency, billing_type, interval_unit, interval_count, active, metadata
     FROM billing_plans
     WHERE active = true
     ORDER BY tier_rank ASC, amount_paise ASC
@@ -133,7 +136,7 @@ export async function listActivePlans(): Promise<BillingPlan[]> {
 export async function getPlanByCode(code: string): Promise<BillingPlan | null> {
   const sql = requireSql();
   const rows = (await sql`
-    SELECT id, code, name, description, tier_rank, amount_paise, currency, billing_type, interval_unit, interval_count, active
+    SELECT id, code, name, description, tier_rank, amount_paise, currency, billing_type, interval_unit, interval_count, active, metadata
     FROM billing_plans
     WHERE code = ${code}
     LIMIT 1
@@ -342,12 +345,22 @@ export async function updatePaymentByOrderId(input: {
 export async function getPlanById(planId: string): Promise<BillingPlan | null> {
   const sql = requireSql();
   const rows = (await sql`
-    SELECT id, code, name, description, tier_rank, amount_paise, currency, billing_type, interval_unit, interval_count, active
+    SELECT id, code, name, description, tier_rank, amount_paise, currency, billing_type, interval_unit, interval_count, active, metadata
     FROM billing_plans
     WHERE id = ${planId}
     LIMIT 1
   `) as BillingPlanRow[];
   return rows[0] ? mapPlan(rows[0]) : null;
+}
+
+export async function setPlanMetadata(planId: string, metadata: Record<string, unknown>): Promise<void> {
+  const sql = requireSql();
+  await sql`
+    UPDATE billing_plans
+    SET metadata = ${sql.json(toJsonValue(metadata))},
+        updated_at = now()
+    WHERE id = ${planId}
+  `;
 }
 
 export async function getPlanByProviderSubscriptionId(providerSubscriptionId: string): Promise<{

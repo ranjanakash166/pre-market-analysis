@@ -16,6 +16,7 @@ type BillingPlan = {
 
 type CheckoutResponse = {
   mode: "one_time" | "recurring";
+  razorpayKeyId: string;
   razorpayOrderId?: string;
   razorpaySubscriptionId?: string;
   amountPaise: number;
@@ -46,13 +47,16 @@ export default function SubscribePage() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    if (window.Razorpay) return;
+    const existing = document.querySelector<HTMLScriptElement>(
+      'script[src="https://checkout.razorpay.com/v1/checkout.js"]',
+    );
+    if (existing) return;
     const script = document.createElement("script");
     script.src = "https://checkout.razorpay.com/v1/checkout.js";
     script.async = true;
     document.body.appendChild(script);
-    return () => {
-      document.body.removeChild(script);
-    };
+    return () => undefined;
   }, []);
 
   useEffect(() => {
@@ -94,13 +98,10 @@ export default function SubscribePage() {
       const out = (await res.json()) as CheckoutResponse & { error?: string };
       if (!res.ok) throw new Error(out.error ?? "Failed to initialize checkout");
       if (!window.Razorpay) throw new Error("Razorpay SDK not loaded");
-
-      const keyRes = await fetch("/api/billing/razorpay-key", { cache: "no-store" });
-      const keyJson = (await keyRes.json()) as { keyId?: string; error?: string };
-      if (!keyRes.ok || !keyJson.keyId) throw new Error(keyJson.error ?? "Missing Razorpay key");
+      if (!out.razorpayKeyId) throw new Error("Missing Razorpay key");
 
       const options: Record<string, unknown> = {
-        key: keyJson.keyId,
+        key: out.razorpayKeyId,
         name: "Twickers",
         description: "Subscription checkout",
         theme: { color: "#6366f1" },
