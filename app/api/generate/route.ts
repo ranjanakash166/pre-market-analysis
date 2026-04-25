@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { generateReport } from "@/lib/ai";
-import { canGenerateMode } from "@/lib/feature-gates";
+import { FREE_TIER_ALLOWED_GENERATE_MODES, hasPaidAccessForUser } from "@/lib/feature-gates";
 import { traderModeSchema } from "@/lib/schema";
 import { saveReport } from "@/lib/store";
 
@@ -21,7 +21,8 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Invalid mode. Expected A/B/C." }, { status: 400 });
     }
 
-    if (!canGenerateMode(session, mode.data)) {
+    const isPaid = await hasPaidAccessForUser(session.user.id);
+    if (!isPaid && !FREE_TIER_ALLOWED_GENERATE_MODES.has(mode.data)) {
       return NextResponse.json(
         {
           error:

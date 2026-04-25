@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/auth";
-import { FREE_TIER_MAX_TWEET_PAGE, hasActiveSubscription } from "@/lib/feature-gates";
+import { FREE_TIER_MAX_TWEET_PAGE, hasPaidAccessForUser } from "@/lib/feature-gates";
 import {
   decodeTweetCursor,
   getMonitoredAccountById,
@@ -17,7 +17,7 @@ export async function GET(
     return NextResponse.json({ error: "Please sign in first." }, { status: 401 });
   }
 
-  const isPaid = hasActiveSubscription(session);
+  const isPaid = await hasPaidAccessForUser(session.user.id);
 
   if (!hasDatabase()) {
     return NextResponse.json({ error: "Database not configured" }, { status: 503 });

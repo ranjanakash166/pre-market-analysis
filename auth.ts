@@ -4,14 +4,6 @@ import Credentials from "next-auth/providers/credentials";
 import type { NextAuthConfig } from "next-auth";
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import {
-  authDbAvailable,
-  getActiveSubscriptionSnapshot,
-  getCredentialsByEmail,
-  getUserByEmail,
-  upsertGoogleUser,
-} from "@/lib/auth-db";
-import { verifyPassword } from "@/lib/auth-password";
 
 const googleId = process.env.GOOGLE_CLIENT_ID?.trim();
 const googleSecret = process.env.GOOGLE_CLIENT_SECRET?.trim();
@@ -53,9 +45,13 @@ providers.push(
       password: { label: "Password", type: "password" },
     },
     async authorize(raw) {
-      if (!authDbAvailable()) return null;
       const parsed = credentialsInputSchema.safeParse(raw);
       if (!parsed.success) return null;
+      const [{ authDbAvailable, getCredentialsByEmail }, { verifyPassword }] = await Promise.all([
+        import("@/lib/auth-db"),
+        import("@/lib/auth-password"),
+      ]);
+      if (!authDbAvailable()) return null;
       const record = await getCredentialsByEmail(parsed.data.email);
       if (!record) return null;
       const ok = await verifyPassword(parsed.data.password, record.passwordHash);
@@ -115,9 +111,10 @@ const config = {
       return true;
     },
     async signIn({ user, account }) {
-      if (!authDbAvailable()) return true;
       if (account?.provider !== "google") return true;
       if (!user.email || !account.providerAccountId) return false;
+      const { authDbAvailable, upsertGoogleUser } = await import("@/lib/auth-db");
+      if (!authDbAvailable()) return true;
       const persisted = await upsertGoogleUser({
         email: user.email,
         name: user.name,
@@ -128,8 +125,6 @@ const config = {
       return true;
     },
     async jwt({ token, user }) {
-      if (!authDbAvailable()) return token;
-
       let userId =
         typeof user?.id === "string" && uuidRegex.test(user.id)
           ? user.id
@@ -137,17 +132,7 @@ const config = {
             ? token.sub
             : null;
 
-      if (!userId && typeof token.email === "string") {
-        const byEmail = await getUserByEmail(token.email);
-        userId = byEmail?.id ?? null;
-      }
-
       if (!userId) return token;
-
-      const sub = await getActiveSubscriptionSnapshot(userId);
-      token.planCode = sub.planCode;
-      token.subscriptionStatus = sub.status;
-      token.hasActiveSubscription = sub.hasAccess;
       token.sub = userId;
       return token;
     },
