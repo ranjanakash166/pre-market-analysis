@@ -1,0 +1,91 @@
+{
+  "videoId": "rd3Rnh_5i9g",
+  "title": "First 30 Minutes Scalping Strategy for Nifty 50",
+  "subtitle": "A rule-based option buying setup focused on opening-range breakout, pullback, and momentum confirmation.",
+  "summary": "This course summarizes a practical intraday scalping framework shared in the tutorial, centered on the first 30-minute range after market open. The approach avoids early volatility, marks the opening high-low, and then looks for breakout or breakdown continuation with pullback confirmation instead of impulsive entries. It also adds execution filters for time window, gap scenarios, and overtrading control to improve discipline in option buying.",
+  "learningObjectives": [
+    "Define and mark the first 30-minute opening range and explain why this range is central to the setup.",
+    "Apply breakout or breakdown logic with pullback-based entries instead of direct chase entries.",
+    "Use candle-quality and stop-loss placement rules to keep risk compact and repeatable.",
+    "Identify high-priority market conditions such as gap up or gap down for this strategy.",
+    "Use time filters and process constraints to reduce overtrading in intraday option buying."
+  ],
+  "modules": [
+    {
+      "id": "m1-core-idea",
+      "title": "Core idea: skip noise, trade structure",
+      "summary": "The setup starts by avoiding the first impulse and waiting for market structure to emerge.",
+      "paragraphs": [
+        "The tutorial emphasizes skipping the first 30 minutes after open, where BTST, STBT, and institutional order flow can create noisy and erratic price movement. Instead of reacting early, the strategy waits for this initial volatility to settle into a clearer range.",
+        "That opening range becomes the day’s decision zone. Rather than predicting direction, the trader reacts to price behavior around this zone and focuses on momentum outside the range."
+      ]
+    },
+    {
+      "id": "m2-opening-range",
+      "title": "Marking the first 30-minute range",
+      "summary": "Create a clear high-low bracket up to 9:45 AM.",
+      "paragraphs": [
+        "Use 5-minute candles and allow the market to form candles from 9:15 through 9:45. Mark the high and low of that first 30-minute block and extend the levels horizontally.",
+        "This gives a concrete framework: above range for bullish continuation context, below range for bearish continuation context. The strategy avoids trading inside the range where whipsaws are more likely."
+      ]
+    },
+    {
+      "id": "m3-entry-logic",
+      "title": "Entry logic: breakout, pullback, confirmation",
+      "summary": "Do not enter on first break; wait for pullback and confirmation.",
+      "paragraphs": [
+        "The setup avoids direct breakout chase because immediate entries can force wider stop-losses and poorer risk-reward. Instead, wait for price to break outside the range, then pull back toward the level, and then print a confirming candle.",
+        "For short setups, entry is taken below the pullback candle close or breakdown trigger; for long setups, inverse logic applies. The tutorial repeatedly stresses that smaller pullbacks and cleaner structure are preferable."
+      ]
+    },
+    {
+      "id": "m4-risk-and-candle-quality",
+      "title": "Risk control and candle-quality filter",
+      "summary": "Small, rule-based risk matters more than predicting every move.",
+      "paragraphs": [
+        "Stop-loss is placed around the relevant trigger structure (often above breakdown candle for shorts, below breakout candle for longs), with practical buffer where needed. The goal is to avoid oversized stop-losses that trap traders in recovery cycles.",
+        "Candle quality is part of the filter: cleaner body-dominant candles with limited wick noise are preferred. This helps reduce low-quality entries in choppy conditions."
+      ]
+    },
+    {
+      "id": "m5-when-it-works-best",
+      "title": "Best market contexts for this setup",
+      "summary": "Gap scenarios and clear imbalance are highlighted as high-probability contexts.",
+      "paragraphs": [
+        "The tutorial prioritizes gap up and gap down conditions because they can create stronger directional imbalance and cleaner follow-through. Narrow prior-day range conditions are also discussed as potentially useful context.",
+        "A key principle is imbalance: markets often move meaningfully when buyers and sellers are no longer in equilibrium. The setup attempts to align entries with that imbalance rather than with random intrarange movement."
+      ]
+    },
+    {
+      "id": "m6-time-filter-and-discipline",
+      "title": "Time filter to prevent overtrading",
+      "summary": "Entry window discipline is a core edge.",
+      "paragraphs": [
+        "The tutorial recommends using the setup for entries after 9:45 and generally before around 11:30. Even if a trade later extends, entries should come from this defined morning window.",
+        "This reduces overtrading and decision fatigue. The broader message is process consistency: a strict playbook with fewer, better trades tends to outperform impulsive all-day execution."
+      ]
+    }
+  ],
+  "keyTakeaways": [
+    "Opening-range structure can improve clarity versus immediate open trading.",
+    "Breakout or breakdown entries become stronger when combined with pullback confirmation.",
+    "Smaller, defined stop-losses protect capital and psychology.",
+    "Gap-driven imbalance often provides better setup quality.",
+    "Time-window discipline is critical for consistent intraday execution."
+  ],
+  "disclaimer": [
+    "This course is a caption-derived educational summary and not investment advice.",
+    "Option buying is high risk and can lead to rapid capital loss.",
+    "Backtest and paper-trade any setup before live deployment."
+  ],
+  "tags": [
+    "option buying",
+    "scalping",
+    "opening range breakout",
+    "nifty 50",
+    "intraday",
+    "risk management"
+  ],
+  "estimatedMinutes": 45,
+  "sourceVideoUrl": "https://www.youtube.com/watch?v=rd3Rnh_5i9g"
+}

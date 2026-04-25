@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Radio } from "lucide-react";
+import { BookOpen, LayoutDashboard, Radio } from "lucide-react";
+import { signOut, useSession } from "next-auth/react";
 import { NAV_FEATURE_LABEL, SITE_NAME } from "@/lib/branding";
 
 function BrandMark() {
@@ -17,10 +18,15 @@ function BrandMark() {
 }
 
 export function NavBar() {
+  const { data: session, status } = useSession();
   const pathname = usePathname();
   const onLoginRoute = pathname === "/login";
   const onDashboard = pathname === "/";
   const onXFeed = pathname === "/x";
+  const onLearn = pathname === "/learn" || pathname.startsWith("/learn/");
+  const onSubscribe = pathname === "/subscribe";
+  const onBilling = pathname === "/account/billing";
+  const isLoggedIn = status === "authenticated" && !!session?.user?.id;
 
   return (
     <nav className="sticky top-0 z-50 border-b border-white/[0.08] bg-[rgb(2_6_23_/0.82)] backdrop-blur-xl backdrop-saturate-150">
@@ -42,7 +48,7 @@ export function NavBar() {
         <div className="flex shrink-0 items-center gap-2 sm:gap-3">
           {!onLoginRoute ? (
             <Link
-              href="/"
+              href={isLoggedIn ? "/" : "/login"}
               className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-medium transition ${
                 onDashboard
                   ? "bg-white/[0.07] text-amber-100 ring-1 ring-amber-500/25"
@@ -69,6 +75,46 @@ export function NavBar() {
           ) : null}
 
           {!onLoginRoute ? (
+            <Link
+              href="/learn"
+              className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-medium transition ${
+                onLearn
+                  ? "bg-white/[0.07] text-amber-100 ring-1 ring-amber-500/25"
+                  : "text-slate-400 hover:bg-white/[0.05] hover:text-slate-200"
+              }`}
+            >
+              <BookOpen className="h-4 w-4 opacity-80" aria-hidden />
+              <span className="hidden sm:inline">Learn</span>
+            </Link>
+          ) : null}
+
+          {isLoggedIn ? (
+            <>
+              {!onSubscribe ? (
+                <Link
+                  href="/subscribe"
+                  className="rounded-full px-3 py-1.5 text-sm font-medium text-slate-300 transition hover:bg-white/[0.05] hover:text-slate-100"
+                >
+                  Subscribe
+                </Link>
+              ) : null}
+              {!onBilling ? (
+                <Link
+                  href="/account/billing"
+                  className="rounded-full px-3 py-1.5 text-sm font-medium text-slate-300 transition hover:bg-white/[0.05] hover:text-slate-100"
+                >
+                  Billing
+                </Link>
+              ) : null}
+              <button
+                type="button"
+                onClick={() => signOut({ callbackUrl: "/login" })}
+                className="rounded-full bg-white/[0.08] px-4 py-2 text-sm font-semibold text-slate-100 transition hover:bg-white/[0.14]"
+              >
+                Sign out
+              </button>
+            </>
+          ) : !onLoginRoute ? (
             <Link
               href="/login"
               className="rounded-full bg-gradient-to-r from-amber-500 to-orange-600 px-4 py-2 text-sm font-semibold text-slate-950 shadow-lg shadow-amber-500/25 transition hover:brightness-105 active:brightness-95"

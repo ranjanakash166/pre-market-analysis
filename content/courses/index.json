@@ -1,0 +1,25 @@
+{
+  "courses": [
+    {
+      "videoId": "6el9Jqnrdz8",
+      "category": "Option Selling",
+      "title": "Option selling, hedging, and probability - Dhan masterclass",
+      "summary": "Conversation on option buying vs selling, hedging as insurance, margin and tail risk, and a disciplined learning path-summarized from captions; watch the video for the full session.",
+      "thumbnailUrl": "https://img.youtube.com/vi/6el9Jqnrdz8/hqdefault.jpg"
+    },
+    {
+      "videoId": "VFRHrYtkr6o",
+      "category": "Option Selling",
+      "title": "The options strategy built for better sleep - Face2Face with Vaibhav Shinde",
+      "summary": "Interview-style tutorial on transitioning from noisy option buying to risk-defined, process-driven options trading with strong emphasis on sizing and psychology.",
+      "thumbnailUrl": "https://img.youtube.com/vi/VFRHrYtkr6o/hqdefault.jpg"
+    },
+    {
+      "videoId": "rd3Rnh_5i9g",
+      "category": "Option Buying",
+      "title": "First 30 Minutes Scalping Strategy for Nifty 50",
+      "summary": "Rule-based option buying setup using the first 30-minute opening range, pullback confirmation, and strict time-window discipline.",
+      "thumbnailUrl": "https://img.youtube.com/vi/rd3Rnh_5i9g/hqdefault.jpg"
+    }
+  ]
+}

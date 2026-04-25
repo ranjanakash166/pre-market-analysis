@@ -1,0 +1,100 @@
+{
+  "videoId": "VFRHrYtkr6o",
+  "title": "The options strategy built for better sleep - Face2Face with Vaibhav Shinde",
+  "subtitle": "A practitioner conversation on moving from noisy option buying to risk-defined option selling and process discipline.",
+  "summary": "This course is built from the tutorial interview where Vaibhav Shinde shares his path from corporate life to trading, including what failed in his early phase and what changed later. The session emphasizes that markets should not destroy sleep: sizing, hedging, and strategy selection must fit psychological tolerance. It also discusses the difference between chasing expiry jackpots and running a probability-led process, with practical lessons on learning, drawdown awareness, and sustainable execution.",
+  "learningObjectives": [
+    "Explain why many retail traders are attracted to expiry-style option buying and where that approach can break down.",
+    "Describe the speaker's transition from indicator-heavy experimentation to simpler, process-driven trading rules.",
+    "Understand how risk control and position sizing connect directly to emotional stability and sleep quality.",
+    "Summarize the mindset shift from single-income dependence toward multi-stream income thinking and disciplined capital building.",
+    "Identify practical guardrails for beginners before scaling any options strategy."
+  ],
+  "modules": [
+    {
+      "id": "m1-intro-and-framing",
+      "title": "Why this conversation starts with sleep, not returns",
+      "summary": "The host frames trading quality around peace of mind and sustainable behavior.",
+      "paragraphs": [
+        "The opening sets a strong tone: if the market disturbs your sleep, your position is too large or your process is fragile. That framing is useful because it turns risk management into a daily behavioral metric, not just a spreadsheet statistic.",
+        "The interview is positioned as an educational discovery format rather than a promise of quick gains. Treat the course the same way: use it to sharpen process quality, not to copy trades mechanically."
+      ]
+    },
+    {
+      "id": "m2-early-journey-and-motivation",
+      "title": "From corporate growth goals to market participation",
+      "summary": "Background, career path, and why additional income streams became important.",
+      "paragraphs": [
+        "The speaker describes a traditional path: engineering, MBA, long corporate tenure, and no family stock-market background. Markets were initially viewed with skepticism at home, which is common in risk-averse households.",
+        "A key trigger was the idea that wealth creation usually depends on more than one income source. That pushed a search for parallel earning capability, eventually leading to active market participation."
+      ]
+    },
+    {
+      "id": "m3-beginner-traps",
+      "title": "Beginner trap: over-learning setups, under-building process",
+      "summary": "Too many courses, too many indicators, not enough execution clarity.",
+      "paragraphs": [
+        "One of the clearest lessons is that consuming many courses and indicators does not automatically produce profitability. The interview highlights a phase of heavy education spend but no consistent outcomes.",
+        "A practical takeaway is to reduce strategy sprawl. Define one clear setup family, one risk framework, and one review routine. Complexity often feels productive while silently increasing execution errors."
+      ]
+    },
+    {
+      "id": "m4-option-buying-vs-probability",
+      "title": "Expiry jackpot mindset vs probability-led trading",
+      "summary": "Why high-payout stories attract traders and how that differs from repeatable edge-building.",
+      "paragraphs": [
+        "The transcript repeatedly references social-media style narratives: small premium turning into very large same-day returns. These examples are emotionally powerful and can create unrealistic baseline expectations.",
+        "The alternative framework discussed is probability-led trading, where edge comes from repeatability, defined risk, and controlled drawdowns rather than one-off outsized wins."
+      ]
+    },
+    {
+      "id": "m5-risk-psychology-and-sizing",
+      "title": "Risk, psychology, and why sizing decides survival",
+      "summary": "Position size and strategy design are tied to emotional resilience.",
+      "paragraphs": [
+        "A major theme is that strategy quality is inseparable from size quality. Even a good setup can become harmful when oversized, because emotional pressure degrades decision-making.",
+        "This module should be operationalized through written limits: maximum loss per day or week, allowed leverage bands, and conditions that force size reduction when sleep or focus deteriorates."
+      ]
+    },
+    {
+      "id": "m6-life-events-and-decision-quality",
+      "title": "Health shocks, life priorities, and trading design",
+      "summary": "Personal adversity can reset priorities toward robustness over excitement.",
+      "paragraphs": [
+        "The interview includes a serious health episode that changed how the speaker prioritizes family time, stress exposure, and work style. This context matters because strategy choice is never purely mathematical; it must match life constraints.",
+        "A durable trading plan should fit your current life capacity. If monitoring intensity, emotional load, or volatility of outcomes exceeds that capacity, the strategy needs redesign, not motivational slogans."
+      ]
+    },
+    {
+      "id": "m7-practical-guardrails",
+      "title": "Practical guardrails for newer traders",
+      "summary": "Simple rules to prevent avoidable damage while learning.",
+      "paragraphs": [
+        "Start with one core playbook, track outcomes in a journal, and avoid jumping styles every week. Consistency in review beats novelty in setup collection.",
+        "Before scaling capital, prove process stability over a meaningful sample of trades and different market moods. The goal is not just profits, but controlled variance and emotional steadiness."
+      ]
+    }
+  ],
+  "keyTakeaways": [
+    "If your strategy regularly harms sleep, your risk architecture is misaligned.",
+    "Education is useful only when converted into a narrow, testable process.",
+    "Expiry-style payoff stories can distort expectations and risk behavior.",
+    "Position sizing is a first-class edge variable, not an afterthought.",
+    "Sustainable trading should fit your life constraints, not fight them."
+  ],
+  "disclaimer": [
+    "This course is a caption-derived educational summary, not investment advice.",
+    "Options involve substantial risk, including rapid loss of capital.",
+    "Verify instruments, margin rules, and execution assumptions with official broker or exchange resources before trading."
+  ],
+  "tags": [
+    "options",
+    "option selling",
+    "risk management",
+    "trading psychology",
+    "position sizing",
+    "India markets"
+  ],
+  "estimatedMinutes": 85,
+  "sourceVideoUrl": "https://www.youtube.com/watch?v=VFRHrYtkr6o"
+}

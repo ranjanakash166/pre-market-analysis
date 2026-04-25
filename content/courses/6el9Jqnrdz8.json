@@ -1,0 +1,95 @@
+{
+  "videoId": "6el9Jqnrdz8",
+  "title": "Option selling, hedging, and probability — Dhan masterclass",
+  "subtitle": "Conversation with Kundan Prajapati on how professionals think about options vs buying, and why hedging matters.",
+  "summary": "This course distills a long-form interview-style masterclass on option selling and hedging. The speakers contrast option buyers (who often chase payoff convexity) with option sellers (who trade probability and risk management), explain hedging using a simple insurance analogy, and walk through why naked short options are fragile: margin, tail risk, and the skill bar. It closes with practical guidance on learning depth, capital scaling, and treating markets as a probability game rather than a get-rich shortcut.",
+  "learningObjectives": [
+    "Explain in plain language why option selling is often framed as a probability game while option buying emphasizes payoff asymmetry.",
+    "Describe hedging as insurance for a portfolio or directional position, including what is given up when markets behave.",
+    "List the three recurring problems with naked option selling and map each problem to a mitigation idea discussed in the session.",
+    "Contrast a speculative mindset with an education-first, regulator-aligned approach to participating in markets.",
+    "Outline a sensible progression for building skill and capital size rather than jumping straight to large naked exposures."
+  ],
+  "modules": [
+    {
+      "id": "m1-context",
+      "title": "Context: who this is for and how the session is structured",
+      "summary": "Retail education, credible practitioners, and why the hosts emphasize research before trading.",
+      "paragraphs": [
+        "The session is hosted on Dhan’s educational platform and introduces a guest trader who describes years of structured research before leaning into options work. The framing throughout is pro-education: markets already attract speculation, and the hosts argue that research-heavy participation is closer to what regulators encourage.",
+        "You should treat this material as a structured companion to the video, not a substitute for watching it. The spoken conversation mixes Hindi and English; this write-up is in English and may not capture every nuance of tone, example, or caveat that appears on screen."
+      ]
+    },
+    {
+      "id": "m2-buy-vs-sell",
+      "title": "Option buying vs option selling — profitability vs probability",
+      "summary": "Why payoff shape and win-rate thinking pull traders in opposite directions.",
+      "paragraphs": [
+        "A recurring theme is that option buyers often optimize for profitability in the sense of explosive payoffs when they are right, while option sellers more explicitly live inside a probability story: small wins can stack if risk is controlled, but tail events matter enormously.",
+        "The conversation references widely circulated retail-loss statistics and argues that if you sample traders by style, you should expect very different base rates of “steady” outcomes. The point is not to moralize about either side, but to be honest about which game you are actually playing when you choose structures, holding periods, and risk limits.",
+        "Another thread is scalability: the speakers claim that some strategies may look exciting on small capital but do not map cleanly to how large, professional risk is managed day to day. If your goal is durable process, they suggest aligning early study with approaches that remain coherent as size grows."
+      ]
+    },
+    {
+      "id": "m3-hedging",
+      "title": "What hedging is (insurance), and what it is not",
+      "summary": "A contra position can cap disaster scenarios; calm markets make the hedge feel like a cost.",
+      "paragraphs": [
+        "Hedging is explained with a car-insurance analogy: you pay a premium you hope becomes “wasted” in the good case, because the alternative is an unbounded downside event you cannot absorb casually.",
+        "In markets, the analogue is a primary exposure (for example directional index risk) paired with a contra position intended to compensate when conditions turn sharply against you. If conditions stay benign, the hedge often drags on net performance—that drag is the premium.",
+        "The speakers stress that hedging is not magic; it reallocates outcomes across states of the world. Your job as a learner is to understand which states you are buying protection against, and whether you are willing to pay for that protection continuously."
+      ]
+    },
+    {
+      "id": "m4-three-problems",
+      "title": "Three problems of naked option selling — and the hinge on hedging",
+      "summary": "Margin, tail risk, and knowledge intensity; why “sell without hedge” is treated as fragile.",
+      "paragraphs": [
+        "The interview highlights three practical problems people associate with short options: margin can be large, worst-case loss can be extreme without controls, and the strategy class tends to be knowledge-intensive relative to simpler cash-market approaches.",
+        "The proposed response in the session is not to pretend those constraints disappear, but to connect hedging to two of them: a hedge can materially change the margin story versus a single-leg naked short in the examples they discuss, and it can convert an open-ended tail into a bounded risk picture if implemented carefully.",
+        "They also argue that if you refuse to learn the machinery of options, you should probably not trade options at all—other vehicles exist, and forced complexity is a common path to mistakes."
+      ]
+    },
+    {
+      "id": "m5-process",
+      "title": "Process: time to learn, capital scaling, and matching effort to ambition",
+      "summary": "Treat skill acquisition like a serious syllabus; ramp size only after repeated evidence of control.",
+      "paragraphs": [
+        "The speakers push back on the fantasy of effortless profits. They compare professional skill timelines in other fields to markets, and suggest that a few months to more than a year of foundational work is a more realistic bracket for many people than “weekend mastery.”",
+        "On capital, they warn against jumping immediately to the largest size you can fund once. The alternative they describe is staged scaling: prove consistency, survive drawdown psychology, then increase deployment gradually so emotional tolerance tracks financial capacity.",
+        "Throughout, they tie discipline to data: backtests, forward tests, and understanding historical drawdowns before positions are live. Even if you never automate, the habit they advocate is to write down assumptions and stress scenarios before you rely on them."
+      ]
+    },
+    {
+      "id": "m6-cash-vs-options",
+      "title": "Preview: how options markets differ from cash markets",
+      "summary": "Sets expectations that options have their own microstructure, expiry, and Greek-driven behavior.",
+      "paragraphs": [
+        "Near the end of the captured conversation, the discussion pivots to how the options market differs from the cash market. The intent is to prime you for follow-on modules in the video about implementation details, platform mechanics, and when to trade what.",
+        "As you continue in the embedded recording, keep a two-column mental model: cash exposures behave one way through corporate actions and spot drift, while options add time decay, implied volatility, and path dependence. Your edge, if any, has to live in how you integrate those extra dimensions—not in ignoring them."
+      ]
+    }
+  ],
+  "keyTakeaways": [
+    "Option buyers and sellers are not mirror images; payoff asymmetry and probability management pull you toward different risk workflows.",
+    "Hedging is easiest to reason about as paid protection that shines when benign trends reverse fast.",
+    "Naked short options combine capital intensity and tail sensitivity; the session treats hedging as part of a serious short-volatility workflow, not an optional garnish.",
+    "Retail participation benefits from an education-first posture; treat skill acquisition as a multi-month syllabus, not a single weekend hack.",
+    "Scale capital only after you have evidence—across regimes—that your process survives emotionally and financially."
+  ],
+  "disclaimer": [
+    "This page summarizes caption-derived content for learning only. It is not personalized financial, legal, or tax advice.",
+    "Markets involve risk of loss. Past examples in the video do not guarantee future results.",
+    "Verify critical definitions, margin rules, and contract specifications with your broker and the exchange before trading."
+  ],
+  "tags": [
+    "options",
+    "option selling",
+    "hedging",
+    "probability",
+    "India markets",
+    "education"
+  ],
+  "estimatedMinutes": 90,
+  "sourceVideoUrl": "https://www.youtube.com/watch?v=6el9Jqnrdz8"
+}

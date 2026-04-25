@@ -8,6 +8,6 @@ export const config = {
      * requires AUTH_SECRET and would throw MissingSecret before the cron route runs.
      * /api/auth and /login are still allowed inside `authorized` in auth.ts when matched.
      */
-    "/((?!api/cron|_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
+    "/((?!api/cron|api/webhooks/razorpay|_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
   ],
 };

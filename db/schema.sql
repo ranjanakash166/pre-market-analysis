@@ -104,3 +104,110 @@ CREATE TABLE IF NOT EXISTS analysis_tweet_links (
   tweet_id TEXT NOT NULL REFERENCES tweets (tweet_id) ON DELETE CASCADE,
   PRIMARY KEY (analysis_output_id, tweet_id)
 );
+
+-- ------------------------------
+-- Auth + Billing (Google + Credentials + Razorpay)
+-- ------------------------------
+
+CREATE TABLE IF NOT EXISTS app_users (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  email TEXT NOT NULL UNIQUE,
+  name TEXT,
+  image TEXT,
+  email_verified_at TIMESTAMPTZ,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE TABLE IF NOT EXISTS auth_accounts (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID NOT NULL REFERENCES app_users (id) ON DELETE CASCADE,
+  provider TEXT NOT NULL,
+  provider_account_id TEXT NOT NULL,
+  type TEXT NOT NULL DEFAULT 'oauth',
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  UNIQUE (provider, provider_account_id)
+);
+
+CREATE INDEX IF NOT EXISTS auth_accounts_user_idx ON auth_accounts (user_id);
+
+CREATE TABLE IF NOT EXISTS user_credentials (
+  user_id UUID PRIMARY KEY REFERENCES app_users (id) ON DELETE CASCADE,
+  password_hash TEXT NOT NULL,
+  password_updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE TABLE IF NOT EXISTS billing_plans (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  code TEXT NOT NULL UNIQUE,
+  name TEXT NOT NULL,
+  description TEXT,
+  tier_rank INT NOT NULL DEFAULT 1,
+  amount_paise INT NOT NULL CHECK (amount_paise >= 0),
+  currency TEXT NOT NULL DEFAULT 'INR',
+  billing_type TEXT NOT NULL CHECK (billing_type IN ('recurring', 'one_time')),
+  interval_unit TEXT CHECK (interval_unit IN ('day', 'week', 'month', 'year')),
+  interval_count INT CHECK (interval_count IS NULL OR interval_count >= 1),
+  active BOOLEAN NOT NULL DEFAULT true,
+  metadata JSONB NOT NULL DEFAULT '{}',
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE INDEX IF NOT EXISTS billing_plans_active_idx ON billing_plans (active, tier_rank);
+
+CREATE TABLE IF NOT EXISTS subscriptions (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID NOT NULL REFERENCES app_users (id) ON DELETE CASCADE,
+  plan_id UUID NOT NULL REFERENCES billing_plans (id) ON DELETE RESTRICT,
+  provider TEXT NOT NULL DEFAULT 'razorpay',
+  provider_subscription_id TEXT UNIQUE,
+  status TEXT NOT NULL CHECK (
+    status IN ('created', 'trialing', 'active', 'past_due', 'cancelled', 'expired')
+  ),
+  current_period_start TIMESTAMPTZ,
+  current_period_end TIMESTAMPTZ,
+  cancel_at_period_end BOOLEAN NOT NULL DEFAULT false,
+  cancelled_at TIMESTAMPTZ,
+  metadata JSONB NOT NULL DEFAULT '{}',
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE INDEX IF NOT EXISTS subscriptions_user_status_idx
+  ON subscriptions (user_id, status, current_period_end DESC NULLS LAST);
+
+CREATE TABLE IF NOT EXISTS payments (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID NOT NULL REFERENCES app_users (id) ON DELETE CASCADE,
+  plan_id UUID REFERENCES billing_plans (id) ON DELETE SET NULL,
+  subscription_id UUID REFERENCES subscriptions (id) ON DELETE SET NULL,
+  provider TEXT NOT NULL DEFAULT 'razorpay',
+  provider_order_id TEXT,
+  provider_payment_id TEXT,
+  provider_invoice_id TEXT,
+  amount_paise INT NOT NULL CHECK (amount_paise >= 0),
+  currency TEXT NOT NULL DEFAULT 'INR',
+  status TEXT NOT NULL CHECK (status IN ('created', 'authorized', 'captured', 'failed', 'refunded')),
+  payment_method TEXT,
+  metadata JSONB NOT NULL DEFAULT '{}',
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  UNIQUE (provider, provider_order_id),
+  UNIQUE (provider, provider_payment_id)
+);
+
+CREATE INDEX IF NOT EXISTS payments_user_created_idx ON payments (user_id, created_at DESC);
+
+CREATE TABLE IF NOT EXISTS billing_events (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  provider TEXT NOT NULL DEFAULT 'razorpay',
+  event_id TEXT NOT NULL,
+  event_type TEXT NOT NULL,
+  payload JSONB NOT NULL DEFAULT '{}',
+  processed_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  UNIQUE (provider, event_id)
+);
