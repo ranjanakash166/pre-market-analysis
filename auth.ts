@@ -135,14 +135,7 @@ const config = {
       (user as { authProvider?: "google" }).authProvider = "google";
       return true;
     },
-    async jwt({ token, user, account }) {
-      if (account?.provider === "google") {
-        token.authProvider = "google";
-        token.emailVerified = true;
-      } else if (account?.provider === "credentials") {
-        token.authProvider = "credentials";
-      }
-
+    async jwt({ token, user }) {
       if (user) {
         token.emailVerified =
           (user as { emailVerified?: boolean }).emailVerified === true ||
