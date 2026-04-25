@@ -2,6 +2,7 @@ import {
   fetchUserByUsername,
   fetchUserTweetsPage,
   maxTweetId,
+  XApiRequestError,
   type XTweetEntity,
   type XMediaEntity,
 } from "@/lib/x-client";
@@ -121,11 +122,13 @@ export async function ingestOneAccount(input: {
     return { accountId: input.id, ok: true, newTweets: newCount };
   } catch (e) {
     const msg = e instanceof Error ? e.message : String(e);
+    const httpStatus = e instanceof XApiRequestError ? e.httpStatus : undefined;
     await updateAccountFetchError(input.id, msg);
     await finishIngestionRun(runId, {
       status: "error",
       newTweetsCount: 0,
       error: msg,
+      ...(httpStatus != null ? { httpStatus } : {}),
     });
     return { accountId: input.id, ok: false, newTweets: 0, error: msg };
   }

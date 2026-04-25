@@ -1,5 +1,16 @@
 const X_API_BASE = "https://api.twitter.com/2";
 
+/** Thrown on non-OK X API responses so callers can persist `http_status`. */
+export class XApiRequestError extends Error {
+  readonly httpStatus: number;
+
+  constructor(message: string, httpStatus: number) {
+    super(message);
+    this.name = "XApiRequestError";
+    this.httpStatus = httpStatus;
+  }
+}
+
 export type XApiError = {
   title?: string;
   detail?: string;
@@ -77,14 +88,15 @@ export async function fetchUserByUsername(username: string): Promise<XUserResult
   if (!res.ok) {
     const body = (await res.json().catch(() => ({}))) as { errors?: XApiError[] };
     const err = body.errors?.[0];
-    throw new Error(
+    throw new XApiRequestError(
       `X user lookup failed (${res.status}): ${err?.detail ?? err?.title ?? res.statusText}`,
+      res.status,
     );
   }
 
   const json = (await res.json()) as { data?: XUserResult };
   if (!json.data?.id) {
-    throw new Error(`X user not found for @${username}`);
+    throw new XApiRequestError(`X user not found for @${username}`, 404);
   }
   return json.data;
 }
@@ -136,8 +148,9 @@ export async function fetchUserTweetsPage(
   if (!res.ok) {
     const body = (await res.json().catch(() => ({}))) as { errors?: XApiError[] };
     const err = body.errors?.[0];
-    throw new Error(
+    throw new XApiRequestError(
       `X timeline fetch failed (${res.status}): ${err?.detail ?? err?.title ?? res.statusText}`,
+      res.status,
     );
   }
 
