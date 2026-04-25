@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useEffect, useMemo, useState } from "react";
+import { FormEvent, useMemo, useState } from "react";
 import Link from "next/link";
 import { signIn } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
@@ -21,12 +21,32 @@ export default function LoginPage() {
     () => (tab === "login" ? "Sign in to your account" : "Join us today"),
     [tab],
   );
+  const authError = searchParams.get("error");
+  const authErrorMessage = useMemo(() => {
+    if (!authError) return null;
+    if (authError === "OAuthAccountNotLinked") {
+      return "This email is already linked with another sign-in method. Use your original method to login.";
+    }
+    if (authError === "AccessDenied") {
+      return "Google sign-in was denied. Please try again.";
+    }
+    return "Google sign-in failed. Please try again.";
+  }, [authError]);
+
   async function continueWithGoogle() {
     setLoadingGoogle(true);
     setError(null);
     setNotice(null);
     try {
-      await signIn("google", { callbackUrl: "/dashboard" });
+      const out = await signIn("google", {
+        callbackUrl: "/dashboard",
+        redirect: false,
+      });
+      if (out?.url) {
+        window.location.href = out.url;
+        return;
+      }
+      window.location.href = "/api/auth/signin/google?callbackUrl=%2Fdashboard";
     } catch (e) {
       setError(e instanceof Error ? e.message : "Google sign-in failed");
       setLoadingGoogle(false);
@@ -276,7 +296,9 @@ export default function LoginPage() {
             </form>
           )}
 
-          {error ? <p className="mt-4 text-sm font-medium text-rose-400">{error}</p> : null}
+          {error || authErrorMessage ? (
+            <p className="mt-4 text-sm font-medium text-rose-400">{error ?? authErrorMessage}</p>
+          ) : null}
           {notice ? <p className="mt-4 text-sm font-medium text-cyan-300">{notice}</p> : null}
           {unverifiedEmail ? (
             <div className="mt-4 rounded-xl border border-amber-400/25 bg-amber-500/[0.08] p-3 text-sm text-amber-100">
