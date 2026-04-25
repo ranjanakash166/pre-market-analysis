@@ -6,7 +6,8 @@ import type { TraderMode } from "@/types/report";
 
 const MODES: TraderMode[] = ["A", "B", "C"];
 
-export async function POST(request: NextRequest) {
+/** Vercel Cron uses GET; manual triggers may use POST. Same auth for both. */
+async function handleCron(request: NextRequest) {
   if (!isCronAuthorized(request)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
@@ -31,4 +32,12 @@ export async function POST(request: NextRequest) {
     ranAt: new Date().toISOString(),
     results,
   });
+}
+
+export async function GET(request: NextRequest) {
+  return handleCron(request);
+}
+
+export async function POST(request: NextRequest) {
+  return handleCron(request);
 }
