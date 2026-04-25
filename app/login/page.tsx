@@ -26,16 +26,7 @@ export default function LoginPage() {
     setError(null);
     setNotice(null);
     try {
-      const out = await signIn("google", {
-        callbackUrl: "/dashboard",
-        redirect: false,
-      });
-      if (!out || out.error || !out.url) {
-        setError("Google sign-in is currently unavailable. Please try again in a moment.");
-        setLoadingGoogle(false);
-        return;
-      }
-      window.location.href = out.url;
+      await signIn("google", { callbackUrl: "/dashboard" });
     } catch (e) {
       setError(e instanceof Error ? e.message : "Google sign-in failed");
       setLoadingGoogle(false);
