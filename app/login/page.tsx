@@ -42,6 +42,17 @@ export default function LoginPage() {
         callbackUrl: "/dashboard",
         redirect: false,
       });
+      if (out?.error) {
+        if (out.error === "OAuthAccountNotLinked") {
+          setError("This email is already linked with another sign-in method. Use your original method to login.");
+        } else if (out.error === "AccessDenied") {
+          setError("Google sign-in was denied. Please try again.");
+        } else {
+          setError("Google sign-in failed. Please try again.");
+        }
+        setLoadingGoogle(false);
+        return;
+      }
       if (out?.url) {
         window.location.href = out.url;
         return;
