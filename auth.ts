@@ -8,6 +8,7 @@ import {
   authDbAvailable,
   getActiveSubscriptionSnapshot,
   getCredentialsByEmail,
+  getUserByEmail,
   upsertGoogleUser,
 } from "@/lib/auth-db";
 import { verifyPassword } from "@/lib/auth-password";
@@ -39,6 +40,9 @@ const credentialsInputSchema = z.object({
   email: z.string().email(),
   password: z.string().min(6),
 });
+
+const uuidRegex =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
 providers.push(
   Credentials({
@@ -108,31 +112,38 @@ const config = {
         return NextResponse.redirect(new URL("/login", request.nextUrl));
       }
 
-      const isSubscribed =
-        auth?.user &&
-        (auth.user as { subscriptionStatus?: string; hasActiveSubscription?: boolean })
-          .hasActiveSubscription;
-      if (!isSubscribed && path !== "/subscribe" && !path.startsWith("/api/billing")) {
-        return NextResponse.redirect(new URL("/subscribe", request.nextUrl));
-      }
-
       return true;
     },
     async signIn({ user, account }) {
       if (!authDbAvailable()) return true;
       if (account?.provider !== "google") return true;
       if (!user.email || !account.providerAccountId) return false;
-      await upsertGoogleUser({
+      const persisted = await upsertGoogleUser({
         email: user.email,
         name: user.name,
         image: user.image,
         providerAccountId: account.providerAccountId,
       });
+      user.id = persisted.id;
       return true;
     },
     async jwt({ token, user }) {
-      const userId = typeof user?.id === "string" ? user.id : typeof token.sub === "string" ? token.sub : null;
-      if (!userId || !authDbAvailable()) return token;
+      if (!authDbAvailable()) return token;
+
+      let userId =
+        typeof user?.id === "string" && uuidRegex.test(user.id)
+          ? user.id
+          : typeof token.sub === "string" && uuidRegex.test(token.sub)
+            ? token.sub
+            : null;
+
+      if (!userId && typeof token.email === "string") {
+        const byEmail = await getUserByEmail(token.email);
+        userId = byEmail?.id ?? null;
+      }
+
+      if (!userId) return token;
+
       const sub = await getActiveSubscriptionSnapshot(userId);
       token.planCode = sub.planCode;
       token.subscriptionStatus = sub.status;

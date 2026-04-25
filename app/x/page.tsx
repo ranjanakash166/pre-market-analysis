@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { ExternalLink, MessageCircle, Radio, Sparkles } from "lucide-react";
+import Link from "next/link";
+import { useSession } from "next-auth/react";
 import { pageTitle } from "@/lib/branding";
 import type { MonitoredAccountPublic, TweetPublic, XFeedAnalysisPublic } from "@/lib/x-types";
 
@@ -26,6 +28,9 @@ function useDocumentTitle(title: string) {
 }
 
 export default function XFeedPage() {
+  const { data: session } = useSession();
+  const isPaid = session?.user?.hasActiveSubscription === true;
+  const tweetPageLimit = isPaid ? 25 : 10;
   useDocumentTitle(pageTitle("X feed intel"));
 
   const [accounts, setAccounts] = useState<MonitoredAccountPublic[] | null>(null);
@@ -73,7 +78,7 @@ export default function XFeedPage() {
     async function loadTweets() {
       setLoadingTweets(true);
       try {
-        const res = await fetch(`/api/x/accounts/${selectedId}/tweets?limit=25`, { cache: "no-store" });
+        const res = await fetch(`/api/x/accounts/${selectedId}/tweets?limit=${tweetPageLimit}`, { cache: "no-store" });
         const body = (await res.json()) as TweetsResponse;
         if (!cancelled && res.ok && body.ok) {
           setTweets(body.tweets);
@@ -103,13 +108,13 @@ export default function XFeedPage() {
     return () => {
       cancelled = true;
     };
-  }, [selectedId]);
+  }, [selectedId, tweetPageLimit]);
 
   async function loadMore() {
     if (!selectedId || !nextCursor) return;
     setLoadingTweets(true);
     try {
-      const qs = new URLSearchParams({ limit: "25", cursor: nextCursor });
+      const qs = new URLSearchParams({ limit: String(tweetPageLimit), cursor: nextCursor });
       const res = await fetch(`/api/x/accounts/${selectedId}/tweets?${qs}`, { cache: "no-store" });
       const body = (await res.json()) as TweetsResponse;
       if (res.ok && body.ok) {
@@ -143,6 +148,17 @@ export default function XFeedPage() {
           <p className="font-medium">Data is temporarily unavailable</p>
           <p className="mt-2 text-amber-100/80">
             We are having trouble loading updates right now. Please try again shortly.
+          </p>
+        </section>
+      ) : null}
+
+      {!isPaid ? (
+        <section className="mb-6 rounded-2xl border border-cyan-400/20 bg-cyan-400/[0.06] p-4 text-sm text-cyan-100">
+          <p>
+            Free tier shows the latest {tweetPageLimit} posts per source.
+            <Link href="/subscribe" className="ml-2 font-semibold underline underline-offset-4">
+              Upgrade for full X history
+            </Link>
           </p>
         </section>
       ) : null}

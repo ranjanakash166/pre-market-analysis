@@ -1,7 +1,13 @@
 import { NextResponse } from "next/server";
+import { auth } from "@/auth";
 import { hasDatabase, listMonitoredAccounts } from "@/lib/x-repo";
 
 export async function GET() {
+  const session = await auth();
+  if (!session?.user?.id) {
+    return NextResponse.json({ ok: false, error: "Please sign in first.", accounts: [] }, { status: 401 });
+  }
+
   if (!hasDatabase()) {
     return NextResponse.json(
       {

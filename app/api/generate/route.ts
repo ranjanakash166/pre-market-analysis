@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
+import { auth } from "@/auth";
 import { generateReport } from "@/lib/ai";
+import { canGenerateMode } from "@/lib/feature-gates";
 import { traderModeSchema } from "@/lib/schema";
 import { saveReport } from "@/lib/store";
 
@@ -8,10 +10,26 @@ export const maxDuration = 300;
 
 export async function POST(request: NextRequest) {
   try {
+    const session = await auth();
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: "Please sign in first." }, { status: 401 });
+    }
+
     const body = (await request.json()) as { mode?: string };
     const mode = traderModeSchema.safeParse(body.mode ?? "A");
     if (!mode.success) {
       return NextResponse.json({ error: "Invalid mode. Expected A/B/C." }, { status: 400 });
+    }
+
+    if (!canGenerateMode(session, mode.data)) {
+      return NextResponse.json(
+        {
+          error:
+            "Free tier currently supports Generate for A mode only. Upgrade to access B/C generation.",
+          upgradePath: "/subscribe",
+        },
+        { status: 402 },
+      );
     }
 
     const report = await generateReport(mode.data);

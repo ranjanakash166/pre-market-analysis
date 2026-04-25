@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
+import { auth } from "@/auth";
+import { FREE_TIER_MAX_TWEET_PAGE, hasActiveSubscription } from "@/lib/feature-gates";
 import {
   decodeTweetCursor,
   getMonitoredAccountById,
@@ -10,6 +12,13 @@ export async function GET(
   request: NextRequest,
   context: { params: Promise<{ id: string }> },
 ) {
+  const session = await auth();
+  if (!session?.user?.id) {
+    return NextResponse.json({ error: "Please sign in first." }, { status: 401 });
+  }
+
+  const isPaid = hasActiveSubscription(session);
+
   if (!hasDatabase()) {
     return NextResponse.json({ error: "Database not configured" }, { status: 503 });
   }
@@ -27,10 +36,23 @@ export async function GET(
   const limit = limitRaw ? Number(limitRaw) : 20;
   const cursor = decodeTweetCursor(cursorRaw);
 
+  const requestedLimit = Number.isFinite(limit) ? limit : 20;
+  const effectiveLimit = isPaid ? requestedLimit : Math.min(requestedLimit, FREE_TIER_MAX_TWEET_PAGE);
+
+  if (!isPaid && cursorRaw) {
+    return NextResponse.json(
+      {
+        error: "Free tier shows latest posts only. Upgrade to load older posts.",
+        upgradePath: "/subscribe",
+      },
+      { status: 402 },
+    );
+  }
+
   const page = await listTweetsPage({
     accountId: account.id,
     handle: account.handle,
-    limit: Number.isFinite(limit) ? limit : 20,
+    limit: effectiveLimit,
     cursor,
   });
 
@@ -42,6 +64,14 @@ export async function GET(
       displayName: account.displayName,
     },
     tweets: page.tweets,
-    nextCursor: page.nextCursor,
+    nextCursor: isPaid ? page.nextCursor : null,
+    access: isPaid
+      ? { tier: "paid" }
+      : {
+          tier: "free",
+          limit: FREE_TIER_MAX_TWEET_PAGE,
+          note: "Upgrade to load older posts.",
+          upgradePath: "/subscribe",
+        },
   });
 }

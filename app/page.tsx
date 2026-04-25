@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { RefreshCw } from "lucide-react";
+import { useSession } from "next-auth/react";
+import Link from "next/link";
 import { FEATURE_PRE_MARKET, SITE_NAME, SITE_TAGLINE } from "@/lib/branding";
 import { ReportTabs } from "@/components/report-tabs";
 import type { GeneratedReport, TraderMode } from "@/types/report";
@@ -15,6 +17,8 @@ function modeLabel(m: TraderMode): string {
 }
 
 export default function HomePage() {
+  const { data: session } = useSession();
+  const isPaid = session?.user?.hasActiveSubscription === true;
   const [mode, setMode] = useState<TraderMode>("A");
   const [report, setReport] = useState<GeneratedReport | null>(null);
   const [loading, setLoading] = useState(false);
@@ -104,6 +108,18 @@ export default function HomePage() {
         </p>
       </div>
 
+      {!isPaid ? (
+        <section className="mb-6 rounded-2xl border border-cyan-400/20 bg-cyan-400/[0.06] p-4 text-sm text-cyan-100">
+          <p>
+            Free tier is active: you can view all modes, and generate mode A.
+            <span className="ml-1">Upgrade for unlimited B/C generation.</span>
+            <Link href="/subscribe" className="ml-2 font-semibold underline underline-offset-4">
+              See plans
+            </Link>
+          </p>
+        </section>
+      ) : null}
+
       <section className="mb-10 rounded-2xl border border-white/[0.08] bg-[rgb(15_23_42_/0.55)] p-5 shadow-xl shadow-black/20 backdrop-blur-md md:p-6">
         <div className="mb-5 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
@@ -137,8 +153,10 @@ export default function HomePage() {
                     ? "bg-gradient-to-b from-white/[0.14] to-white/[0.06] text-white shadow-md ring-1 ring-amber-500/35"
                     : "text-slate-400 hover:bg-white/[0.05] hover:text-slate-200"
                 }`}
+                title={!isPaid && option !== "A" ? "Free tier: generate is limited to A mode." : undefined}
               >
                 {option === "A" ? "A · Intraday" : option === "B" ? "B · Swing" : "C · Full"}
+                {!isPaid && option !== "A" ? " (preview)" : ""}
               </button>
             ))}
           </div>
