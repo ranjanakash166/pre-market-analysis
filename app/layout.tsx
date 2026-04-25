@@ -15,20 +15,20 @@ const sans = Plus_Jakarta_Sans({
 
 export const metadata: Metadata = {
   title: {
-    default: `${SITE_NAME} — ${FEATURE_PRE_MARKET}`,
+    default: `${SITE_NAME} — AI pre-market intelligence`,
     template: `%s · ${SITE_NAME}`,
   },
-  description: `${SITE_NAME}: ${FEATURE_PRE_MARKET}. ${SITE_TAGLINE}`,
+  description: `${SITE_NAME} helps traders prepare with AI-powered pre-market briefings, A/B/C modes, and source-backed market context.`,
   openGraph: {
-    title: `${SITE_NAME} — ${FEATURE_PRE_MARKET}`,
-    description: `${FEATURE_PRE_MARKET} — ${SITE_TAGLINE}`,
+    title: `${SITE_NAME} — AI pre-market intelligence`,
+    description: `${FEATURE_PRE_MARKET} with actionable insights, scenarios, and source-backed context.`,
     siteName: SITE_NAME,
     type: "website",
   },
   twitter: {
     card: "summary",
-    title: `${SITE_NAME} — ${FEATURE_PRE_MARKET}`,
-    description: SITE_TAGLINE,
+    title: `${SITE_NAME} — AI pre-market intelligence`,
+    description: `${FEATURE_PRE_MARKET}. ${SITE_TAGLINE}`,
   },
 };
 

@@ -84,10 +84,6 @@ const config = {
     process.env.VERCEL === "1" ||
     process.env.NODE_ENV !== "production",
   callbacks: {
-    /**
-     * Login is optional: guests can use `/`, `/api/report`, `/api/generate`, etc.
-     * Add pathname checks here later for routes that must require a session.
-     */
     authorized({ request, auth }) {
       const path = request.nextUrl.pathname;
       if (path.startsWith("/api/auth")) return true;
@@ -99,9 +95,10 @@ const config = {
 
       const isLoggedIn = !!auth?.user;
       if (path === "/login" && isLoggedIn) {
-        return NextResponse.redirect(new URL("/", request.nextUrl));
+        return NextResponse.redirect(new URL("/dashboard", request.nextUrl));
       }
 
+      if (path === "/") return true;
       if (path === "/login") return true;
 
       if (!isLoggedIn) {

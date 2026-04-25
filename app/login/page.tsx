@@ -2,10 +2,13 @@
 
 import { FormEvent, useMemo, useState } from "react";
 import { signIn } from "next-auth/react";
+import { useSearchParams } from "next/navigation";
 import { SITE_NAME } from "@/lib/branding";
 
 export default function LoginPage() {
-  const [tab, setTab] = useState<"login" | "register">("login");
+  const searchParams = useSearchParams();
+  const initialTab = searchParams.get("tab") === "register" ? "register" : "login";
+  const [tab, setTab] = useState<"login" | "register">(initialTab);
   const [loadingGoogle, setLoadingGoogle] = useState(false);
   const [loadingForm, setLoadingForm] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -22,7 +25,7 @@ export default function LoginPage() {
     setError(null);
     setNotice(null);
     try {
-      await signIn("google", { callbackUrl: "/" });
+      await signIn("google", { callbackUrl: "/dashboard" });
     } catch (e) {
       setError(e instanceof Error ? e.message : "Google sign-in failed");
       setLoadingGoogle(false);
@@ -41,7 +44,7 @@ export default function LoginPage() {
       const out = await signIn("credentials", {
         email,
         password,
-        callbackUrl: "/",
+        callbackUrl: "/dashboard",
         redirect: false,
       });
       if (!out || out.error) {
@@ -88,7 +91,7 @@ export default function LoginPage() {
       const out = await signIn("credentials", {
         email,
         password,
-        callbackUrl: "/",
+        callbackUrl: "/dashboard",
         redirect: false,
       });
       if (!out || out.error) {
