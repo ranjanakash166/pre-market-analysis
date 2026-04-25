@@ -1,7 +1,6 @@
 "use client";
 
 import { FormEvent, useEffect, useMemo, useState } from "react";
-import Link from "next/link";
 import { signIn } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
 import { SITE_NAME } from "@/lib/branding";
@@ -12,7 +11,6 @@ export default function LoginPage() {
   const [tab, setTab] = useState<"login" | "register">(initialTab);
   const [loadingGoogle, setLoadingGoogle] = useState(false);
   const [loadingForm, setLoadingForm] = useState(false);
-  const [unverifiedEmail, setUnverifiedEmail] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
 
@@ -26,16 +24,7 @@ export default function LoginPage() {
     setError(null);
     setNotice(null);
     try {
-      const out = await signIn("google", {
-        callbackUrl: "/dashboard",
-        redirect: false,
-      });
-      if (!out || out.error || !out.url) {
-        setError("Google sign-in is currently unavailable. Please try again in a moment.");
-        setLoadingGoogle(false);
-        return;
-      }
-      window.location.href = out.url;
+      await signIn("google", { callbackUrl: "/dashboard" });
     } catch (e) {
       setError(e instanceof Error ? e.message : "Google sign-in failed");
       setLoadingGoogle(false);
@@ -46,7 +35,6 @@ export default function LoginPage() {
     event.preventDefault();
     setError(null);
     setNotice(null);
-    setUnverifiedEmail(null);
     setLoadingForm(true);
     try {
       const form = new FormData(event.currentTarget);
@@ -67,8 +55,7 @@ export default function LoginPage() {
           verified?: boolean;
         };
         if (status.exists && status.verified === false) {
-          setUnverifiedEmail(email);
-          setError("Your email is not verified yet. Please verify your email to continue.");
+          window.location.href = `/verify-email?status=pending&email=${encodeURIComponent(email)}`;
           setLoadingForm(false);
           return;
         } else {
@@ -287,19 +274,6 @@ export default function LoginPage() {
 
           {error ? <p className="mt-4 text-sm font-medium text-rose-400">{error}</p> : null}
           {notice ? <p className="mt-4 text-sm font-medium text-cyan-300">{notice}</p> : null}
-          {unverifiedEmail ? (
-            <div className="mt-4 rounded-xl border border-amber-400/25 bg-amber-500/[0.08] p-3 text-sm text-amber-100">
-              <p className="mb-2">
-                Please verify <span className="font-semibold">{unverifiedEmail}</span> before logging in.
-              </p>
-              <Link
-                href={`/verify-email?status=pending&email=${encodeURIComponent(unverifiedEmail)}`}
-                className="inline-flex rounded-lg border border-amber-300/35 px-3 py-1.5 font-semibold text-amber-100 transition hover:bg-amber-400/10"
-              >
-                Go to verification page
-              </Link>
-            </div>
-          ) : null}
         </div>
       </div>
     </div>
