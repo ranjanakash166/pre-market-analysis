@@ -204,8 +204,7 @@ export async function updateAccountFetchError(accountId: string, message: string
   const sql = requireSql();
   await sql`
     UPDATE monitored_accounts
-    SET last_fetch_at = now(),
-        last_error = ${message},
+    SET last_error = ${message},
         updated_at = now()
     WHERE id = ${accountId}
   `;

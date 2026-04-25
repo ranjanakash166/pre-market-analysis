@@ -8,6 +8,8 @@ import {
 
 export type XSyncResult = {
   seeded: number;
+  /** Rows selected for this run (empty ⇒ no `ingestion_runs`, no X API). */
+  accountsDue: number;
   ingest: {
     accountId: string;
     handle: string;
@@ -70,5 +72,5 @@ export async function runXSyncPipeline(opts?: { accountLimit?: number }): Promis
     }
   }
 
-  return { seeded: inserted, ingest, analysis };
+  return { seeded: inserted, accountsDue: due.length, ingest, analysis };
 }
