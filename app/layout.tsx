@@ -19,7 +19,7 @@ export const metadata: Metadata = {
     default: `${SITE_NAME} — AI pre-market intelligence`,
     template: `%s · ${SITE_NAME}`,
   },
-  description: `${SITE_NAME} helps traders prepare with AI-powered pre-market briefings, A/B/C modes, and source-backed market context.`,
+  description: `${SITE_NAME} helps traders prepare with AI-powered pre-market briefings, adaptive briefing depth, and source-backed market context.`,
   alternates: {
     canonical: "/",
   },

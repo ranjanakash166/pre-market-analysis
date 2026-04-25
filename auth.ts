@@ -100,6 +100,8 @@ const config = {
 
       if (path === "/") return true;
       if (path === "/login") return true;
+      if (path.startsWith("/opengraph-image")) return true;
+      if (path.startsWith("/twitter-image")) return true;
 
       if (!isLoggedIn) {
         return NextResponse.redirect(new URL("/login", request.nextUrl));

@@ -51,7 +51,7 @@ export default function OpenGraphImage() {
         <div style={{ display: "flex", flexDirection: "column", gap: 14, maxWidth: "88%" }}>
           <div style={{ fontSize: 60, lineHeight: 1.06, fontWeight: 800 }}>AI pre-market intelligence</div>
           <div style={{ fontSize: 30, lineHeight: 1.28, color: "#cbd5e1" }}>
-            A/B/C mode market briefings, X feed analysis, and decision-ready context before the opening bell.
+            Adaptive market briefings, X feed analysis, and decision-ready context before the opening bell.
           </div>
         </div>
 

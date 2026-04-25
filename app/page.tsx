@@ -30,11 +30,11 @@ export default function HomePage() {
       <section className="landing-fade-up rounded-3xl border border-white/[0.09] bg-[rgb(8_12_28_/0.72)] p-6 shadow-2xl shadow-black/30 backdrop-blur-xl md:p-10">
         <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.3em] text-amber-400/95">{SITE_NAME}</p>
         <h1 className="max-w-4xl text-3xl font-extrabold tracking-tight text-white md:text-5xl">
-          Pre-market clarity in minutes, not chaos in tabs
+          Open the market with conviction, not confusion
         </h1>
         <p className="mt-4 max-w-3xl text-sm leading-relaxed text-slate-300 md:text-base">
-          {FEATURE_PRE_MARKET} built for serious traders. {SITE_TAGLINE} Get A/B/C mode intelligence, market context, and
-          decision-ready insights before the first candle.
+          {FEATURE_PRE_MARKET} built for serious traders. {SITE_TAGLINE} Choose your briefing depth and get market context,
+          scenario mapping, and decision-ready insights before the first candle.
         </p>
         <div className="mt-7 flex w-full flex-col items-stretch gap-3 sm:w-auto sm:flex-row sm:items-center">
           <Link
@@ -53,16 +53,16 @@ export default function HomePage() {
         </div>
         <div className="mt-8 grid gap-3 text-xs text-slate-300 sm:grid-cols-3">
           <div className="landing-float rounded-xl border border-white/[0.1] bg-black/20 p-3">
-            <p className="font-semibold text-white">A mode</p>
-            <p className="mt-1 text-slate-400">Intraday pre-open setup, key levels, and opening bias.</p>
+            <p className="font-semibold text-white">Quick Start Brief</p>
+            <p className="mt-1 text-slate-400">Fast pre-open setup with key levels, opening bias, and immediate focus areas.</p>
           </div>
           <div className="landing-float rounded-xl border border-white/[0.1] bg-black/20 p-3 [animation-delay:200ms]">
-            <p className="font-semibold text-white">B mode</p>
-            <p className="mt-1 text-slate-400">Swing context with multi-session structure and rotation watchlist.</p>
+            <p className="font-semibold text-white">Trend Builder Brief</p>
+            <p className="mt-1 text-slate-400">Multi-session structure, rotation watchlists, and context for planned continuation trades.</p>
           </div>
           <div className="landing-float rounded-xl border border-white/[0.1] bg-black/20 p-3 [animation-delay:400ms]">
-            <p className="font-semibold text-white">C mode</p>
-            <p className="mt-1 text-slate-400">Full thesis including volatility, macro, flows, and scenarios.</p>
+            <p className="font-semibold text-white">Deep Insight Brief</p>
+            <p className="mt-1 text-slate-400">Comprehensive thesis covering volatility, macro flows, and high-conviction scenarios.</p>
           </div>
         </div>
       </section>
@@ -76,8 +76,8 @@ export default function HomePage() {
           {[
             {
               icon: Layers3,
-              title: "A/B/C trader modes",
-              copy: "Switch between intraday, swing, and full report context depending on your horizon.",
+              title: "Adaptive briefing depth",
+              copy: "Pick concise, strategic, or deep-dive analysis based on your time horizon and conviction.",
             },
             {
               icon: Radar,
@@ -112,7 +112,11 @@ export default function HomePage() {
         <h2 className="text-2xl font-bold tracking-tight text-white md:text-3xl">How it works</h2>
         <div className="mt-6 grid gap-4 md:grid-cols-3">
           {[
-            { step: "01", title: "Login & choose mode", copy: "Start with A, B, or C mode based on your strategy." },
+            {
+              step: "01",
+              title: "Login & choose briefing style",
+              copy: "Start with the briefing depth that best matches your trading plan for the day.",
+            },
             {
               step: "02",
               title: "Generate market briefing",
@@ -207,17 +211,17 @@ export default function HomePage() {
           <div>
             <h2 className="text-2xl font-bold tracking-tight text-white">Start free. Upgrade when you want depth.</h2>
             <p className="mt-2 max-w-3xl text-sm text-cyan-100/85 md:text-base">
-              Free users can explore all modes and generate A mode. Paid users unlock unlimited generation across B/C for
-              serious prep.
+              Free users can explore the platform and generate entry-level briefs. Paid users unlock unlimited advanced and
+              deep-dive briefings for serious prep.
             </p>
             <ul className="mt-4 space-y-2 text-sm text-cyan-100">
               <li className="flex items-center gap-2">
                 <CheckCircle2 className="h-4 w-4" aria-hidden />
-                Mode A generation available on free tier
+                Entry-level brief generation available on free tier
               </li>
               <li className="flex items-center gap-2">
                 <CheckCircle2 className="h-4 w-4" aria-hidden />
-                Unlimited B/C generation on paid plans
+                Unlimited advanced and deep-dive briefings on paid plans
               </li>
               <li className="flex items-center gap-2">
                 <Clock3 className="h-4 w-4" aria-hidden />
