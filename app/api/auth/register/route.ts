@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-import { createUserWithPassword, getUserByEmail } from "@/lib/auth-db";
+import { authDbAvailable, createUserWithPassword, getUserByEmail } from "@/lib/auth-db";
 import { hashPassword } from "@/lib/auth-password";
+import { issueAndSendVerificationEmail } from "@/lib/auth-verification";
 
 const registerSchema = z.object({
   name: z.string().trim().min(2).max(120),
@@ -11,6 +12,13 @@ const registerSchema = z.object({
 
 export async function POST(request: NextRequest) {
   try {
+    if (!authDbAvailable()) {
+      return NextResponse.json(
+        { error: "Authentication DB is not configured. Set DATABASE_URL or POSTGRES_URL." },
+        { status: 503 },
+      );
+    }
+
     const body = await request.json();
     const parsed = registerSchema.safeParse(body);
     if (!parsed.success) {
@@ -29,10 +37,17 @@ export async function POST(request: NextRequest) {
       passwordHash,
     });
 
+    await issueAndSendVerificationEmail({
+      userId: user.id,
+      email: user.email,
+      userName: user.name,
+    });
+
     return NextResponse.json(
       {
         ok: true,
-        user: { id: user.id, email: user.email, name: user.name },
+        verificationRequired: true,
+        message: "Account created. Check your inbox to verify your email.",
       },
       { status: 201 },
     );
