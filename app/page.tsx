@@ -41,7 +41,7 @@ export default function HomePage() {
             href="/login"
             className="landing-pulse inline-flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-amber-500 to-orange-600 px-5 py-3 text-sm font-extrabold text-slate-950 shadow-lg shadow-amber-500/25 transition hover:brightness-105 sm:w-72"
           >
-            Login to access dashboard
+            Market Analysis
             <ArrowRight className="h-4 w-4" aria-hidden />
           </Link>
           <Link
@@ -249,7 +249,7 @@ export default function HomePage() {
       <section className="reveal-on-scroll mt-14 text-center">
         <h2 className="text-3xl font-bold tracking-tight text-white md:text-4xl">Ready to see your first pre-market brief?</h2>
         <p className="mx-auto mt-3 max-w-2xl text-sm text-slate-400 md:text-base">
-          Join now and open your personalized dashboard in under a minute.
+          Join now and open your personalized market analysis in under a minute.
         </p>
         <Link
           href="/login"

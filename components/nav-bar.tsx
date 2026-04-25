@@ -73,7 +73,7 @@ export function NavBar() {
                 }`}
               >
                 <LayoutDashboard className="h-4 w-4 opacity-80" aria-hidden />
-                <span className="hidden sm:inline">Dashboard</span>
+                <span className="hidden sm:inline">Market Analysis</span>
               </Link>
 
               <Link
@@ -219,7 +219,7 @@ export function NavBar() {
                       : "text-slate-300 hover:bg-white/[0.05] hover:text-slate-100"
                   }`}
                 >
-                  Dashboard
+                  Market Analysis
                 </Link>
                 <Link
                   href="/x"
