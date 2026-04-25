@@ -39,7 +39,10 @@ export default async function RootLayout({
 
   return (
     <html lang="en" className={sans.variable}>
-      <body className={`relative z-10 min-h-screen ${sans.className} text-slate-100 antialiased`}>
+      <body
+        suppressHydrationWarning
+        className={`relative z-10 min-h-screen ${sans.className} text-slate-100 antialiased`}
+      >
         <SessionProvider session={session}>
           <NavBar />
           <div className="relative z-10">{children}</div>

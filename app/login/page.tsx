@@ -1,29 +1,17 @@
 "use client";
 
-import { FormEvent, useMemo, useState } from "react";
+import { useState } from "react";
 import { signIn } from "next-auth/react";
-import { useSearchParams } from "next/navigation";
+import { ArrowRight, Clock3, Landmark, Sparkles } from "lucide-react";
 import { SITE_NAME } from "@/lib/branding";
 
 export default function LoginPage() {
-  const searchParams = useSearchParams();
-  const initialTab = searchParams.get("tab") === "register" ? "register" : "login";
-  const [tab, setTab] = useState<"login" | "register">(initialTab);
   const [loadingGoogle, setLoadingGoogle] = useState(false);
-  const [loadingForm, setLoadingForm] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [notice, setNotice] = useState<string | null>(null);
-
-  const title = useMemo(() => (tab === "login" ? "Welcome back" : "Create account"), [tab]);
-  const subtitle = useMemo(
-    () => (tab === "login" ? "Sign in to your account" : "Join us today"),
-    [tab],
-  );
 
   async function continueWithGoogle() {
     setLoadingGoogle(true);
     setError(null);
-    setNotice(null);
     try {
       await signIn("google", { callbackUrl: "/dashboard" });
     } catch (e) {
@@ -114,46 +102,30 @@ export default function LoginPage() {
         className="pointer-events-none absolute inset-0 -z-10 bg-[linear-gradient(rgba(148,163,184,0.08)_1px,transparent_1px),linear-gradient(90deg,rgba(148,163,184,0.08)_1px,transparent_1px)] [background-size:48px_48px]"
       />
 
-      <div className="w-full max-w-xl">
+      <div className="w-full max-w-2xl">
         <div className="mb-3 text-center text-[11px] font-semibold uppercase tracking-[0.3em] text-slate-500">
           {SITE_NAME}
         </div>
         <div className="mb-8 text-center">
-          <h1 className="text-4xl font-extrabold tracking-tight text-white">{title}</h1>
-          <p className="mt-2 text-base text-slate-400">{subtitle}</p>
+          <h1 className="text-4xl font-extrabold tracking-tight text-white">Welcome back</h1>
+          <p className="mt-2 text-base text-slate-400">
+            Sign in to access your pre-market briefings, X-feed intelligence, and trader learning modules.
+          </p>
         </div>
 
         <div className="rounded-[28px] border border-white/[0.12] bg-[rgb(10_14_34_/0.82)] p-7 shadow-[0_30px_80px_rgba(3,7,18,0.55)] backdrop-blur-2xl md:p-8">
-          <div className="-mt-2 mb-8 grid grid-cols-2 rounded-xl bg-white/[0.02] p-1">
-            <button
-              type="button"
-              onClick={() => setTab("login")}
-              className={`rounded-lg px-4 py-2 text-sm font-semibold transition ${
-                tab === "login"
-                  ? "bg-gradient-to-r from-indigo-500/30 to-cyan-400/30 text-white"
-                  : "text-slate-400 hover:text-slate-200"
-              }`}
-            >
-              Login
-            </button>
-            <button
-              type="button"
-              onClick={() => setTab("register")}
-              className={`rounded-lg px-4 py-2 text-sm font-semibold transition ${
-                tab === "register"
-                  ? "bg-gradient-to-r from-indigo-500/30 to-cyan-400/30 text-white"
-                  : "text-slate-400 hover:text-slate-200"
-              }`}
-            >
-              Register
-            </button>
+          <div className="mb-6 rounded-2xl border border-cyan-400/20 bg-cyan-500/[0.08] px-4 py-3">
+            <p className="flex items-center gap-2 text-sm font-semibold text-cyan-200">
+              <Sparkles className="h-4 w-4" aria-hidden />
+              Fastest way to start: Continue with Google
+            </p>
           </div>
 
           <button
             type="button"
             onClick={continueWithGoogle}
-            disabled={loadingGoogle || loadingForm}
-            className="flex w-full items-center justify-center gap-3 rounded-xl border border-white/[0.12] bg-white/[0.05] px-4 py-3 text-sm font-bold text-slate-100 transition hover:bg-white/[0.09] disabled:cursor-not-allowed disabled:opacity-70"
+            disabled={loadingGoogle}
+            className="flex w-full items-center justify-center gap-3 rounded-xl border border-white/[0.12] bg-gradient-to-r from-white/[0.12] to-white/[0.06] px-4 py-3 text-sm font-bold text-slate-100 transition hover:from-white/[0.18] hover:to-white/[0.1] disabled:cursor-not-allowed disabled:opacity-70"
           >
             <svg className="h-5 w-5 shrink-0" aria-hidden viewBox="0 0 24 24">
               <path
@@ -174,106 +146,37 @@ export default function LoginPage() {
               />
             </svg>
             {loadingGoogle ? "Connecting..." : "Continue with Google"}
+            <ArrowRight className="h-4 w-4" aria-hidden />
           </button>
 
-          <div className="my-5 flex items-center gap-3">
-            <span className="h-px flex-1 bg-white/[0.08]" />
-            <span className="text-xs uppercase tracking-[0.2em] text-slate-500">or</span>
-            <span className="h-px flex-1 bg-white/[0.08]" />
+          <div className="my-6 space-y-3">
+            <div className="rounded-xl border border-amber-400/20 bg-amber-500/[0.06] px-4 py-3 text-sm">
+              <p className="flex items-center justify-between gap-2 font-semibold text-amber-100">
+                <span className="flex items-center gap-2">
+                  <Landmark className="h-4 w-4" aria-hidden />
+                  Login with broker
+                </span>
+                <span className="rounded-md bg-amber-500/20 px-2 py-0.5 text-[11px] uppercase tracking-wide text-amber-200">
+                  Coming soon
+                </span>
+              </p>
+              <p className="mt-1 text-amber-100/70">Direct broker-linked sessions for faster trade execution workflow.</p>
+            </div>
+            <div className="rounded-xl border border-indigo-400/20 bg-indigo-500/[0.06] px-4 py-3 text-sm">
+              <p className="flex items-center justify-between gap-2 font-semibold text-indigo-100">
+                <span className="flex items-center gap-2">
+                  <Clock3 className="h-4 w-4" aria-hidden />
+                  App registration
+                </span>
+                <span className="rounded-md bg-indigo-500/20 px-2 py-0.5 text-[11px] uppercase tracking-wide text-indigo-200">
+                  Coming soon
+                </span>
+              </p>
+              <p className="mt-1 text-indigo-100/70">Native signup flow will be enabled once broker-first onboarding is finalized.</p>
+            </div>
           </div>
 
-          {tab === "login" ? (
-            <form className="space-y-4" onSubmit={onSubmitLogin}>
-              <label className="block text-sm text-slate-300">
-                Email address
-                <input
-                  required
-                  name="email"
-                  type="email"
-                  autoComplete="email"
-                  className="mt-2 w-full rounded-xl border border-white/[0.1] bg-white/[0.03] px-4 py-3 text-slate-100 outline-none transition focus:border-cyan-400/60 focus:ring-2 focus:ring-cyan-400/20"
-                  placeholder="you@example.com"
-                />
-              </label>
-              <label className="block text-sm text-slate-300">
-                Password
-                <input
-                  required
-                  name="password"
-                  type="password"
-                  autoComplete="current-password"
-                  className="mt-2 w-full rounded-xl border border-white/[0.1] bg-white/[0.03] px-4 py-3 text-slate-100 outline-none transition focus:border-cyan-400/60 focus:ring-2 focus:ring-cyan-400/20"
-                  placeholder="Enter your password"
-                />
-              </label>
-              <button
-                type="submit"
-                disabled={loadingForm || loadingGoogle}
-                className="mt-2 w-full rounded-xl bg-gradient-to-r from-indigo-500 to-cyan-400 px-4 py-3 text-sm font-extrabold text-white transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-70"
-              >
-                {loadingForm ? "Signing in..." : "Sign In"}
-              </button>
-            </form>
-          ) : (
-            <form className="space-y-4" onSubmit={onSubmitRegister}>
-              <label className="block text-sm text-slate-300">
-                Full name
-                <input
-                  required
-                  name="name"
-                  type="text"
-                  autoComplete="name"
-                  className="mt-2 w-full rounded-xl border border-white/[0.1] bg-white/[0.03] px-4 py-3 text-slate-100 outline-none transition focus:border-cyan-400/60 focus:ring-2 focus:ring-cyan-400/20"
-                  placeholder="Your full name"
-                />
-              </label>
-              <label className="block text-sm text-slate-300">
-                Email address
-                <input
-                  required
-                  name="email"
-                  type="email"
-                  autoComplete="email"
-                  className="mt-2 w-full rounded-xl border border-white/[0.1] bg-white/[0.03] px-4 py-3 text-slate-100 outline-none transition focus:border-cyan-400/60 focus:ring-2 focus:ring-cyan-400/20"
-                  placeholder="you@example.com"
-                />
-              </label>
-              <label className="block text-sm text-slate-300">
-                Password
-                <input
-                  required
-                  name="password"
-                  minLength={6}
-                  type="password"
-                  autoComplete="new-password"
-                  className="mt-2 w-full rounded-xl border border-white/[0.1] bg-white/[0.03] px-4 py-3 text-slate-100 outline-none transition focus:border-cyan-400/60 focus:ring-2 focus:ring-cyan-400/20"
-                  placeholder="Min. 6 characters"
-                />
-              </label>
-              <label className="block text-sm text-slate-300">
-                Confirm password
-                <input
-                  required
-                  name="confirmPassword"
-                  minLength={6}
-                  type="password"
-                  autoComplete="new-password"
-                  className="mt-2 w-full rounded-xl border border-white/[0.1] bg-white/[0.03] px-4 py-3 text-slate-100 outline-none transition focus:border-cyan-400/60 focus:ring-2 focus:ring-cyan-400/20"
-                  placeholder="Re-enter your password"
-                />
-              </label>
-              <button
-                type="submit"
-                disabled={loadingForm || loadingGoogle}
-                className="mt-2 w-full rounded-xl bg-gradient-to-r from-indigo-500 to-cyan-400 px-4 py-3 text-sm font-extrabold text-white transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-70"
-              >
-                {loadingForm ? "Creating account..." : "Sign Up"}
-              </button>
-            </form>
-          )}
-
           {error ? <p className="mt-4 text-sm font-medium text-rose-400">{error}</p> : null}
-          {notice ? <p className="mt-4 text-sm font-medium text-cyan-300">{notice}</p> : null}
         </div>
       </div>
     </div>

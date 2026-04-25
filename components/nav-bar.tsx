@@ -13,7 +13,14 @@ function BrandMark() {
       className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-amber-400 via-orange-500 to-rose-500 text-sm font-bold text-slate-950 shadow-lg shadow-amber-500/25"
       aria-hidden
     >
-      T
+      <svg viewBox="0 0 24 24" className="h-4.5 w-4.5" fill="none" stroke="currentColor" strokeWidth="1.9">
+        <path d="M6 5v14" />
+        <rect x="4.5" y="9" width="3" height="6" rx="0.7" fill="currentColor" stroke="none" />
+        <path d="M12 4v16" />
+        <rect x="10.5" y="6.5" width="3" height="8.5" rx="0.7" fill="currentColor" stroke="none" />
+        <path d="M18 6v13" />
+        <rect x="16.5" y="11" width="3" height="4.5" rx="0.7" fill="currentColor" stroke="none" />
+      </svg>
     </span>
   );
 }
