@@ -54,7 +54,6 @@ providers.push(
       if (!authDbAvailable()) return null;
       const record = await getCredentialsByEmail(parsed.data.email);
       if (!record) return null;
-      if (!record.user.emailVerifiedAt) return null;
       const ok = await verifyPassword(parsed.data.password, record.passwordHash);
       if (!ok) return null;
       return {
@@ -62,8 +61,6 @@ providers.push(
         email: record.user.email,
         name: record.user.name ?? record.user.email,
         image: record.user.image ?? undefined,
-        emailVerified: true,
-        authProvider: "credentials",
       };
     },
   }),
@@ -103,18 +100,9 @@ const config = {
 
       if (path === "/") return true;
       if (path === "/login") return true;
-      if (path === "/verify-email") return true;
 
       if (!isLoggedIn) {
         return NextResponse.redirect(new URL("/login", request.nextUrl));
-      }
-
-      const isEmailVerified =
-        (auth?.user as { emailVerified?: boolean } | undefined)?.emailVerified !== false;
-      const authProvider = (auth?.user as { authProvider?: string } | undefined)?.authProvider;
-      if (authProvider === "credentials" && !isEmailVerified) {
-        const email = encodeURIComponent((auth?.user as { email?: string } | undefined)?.email ?? "");
-        return NextResponse.redirect(new URL(`/verify-email?status=pending&email=${email}`, request.nextUrl));
       }
 
       return true;
@@ -131,21 +119,9 @@ const config = {
         providerAccountId: account.providerAccountId,
       });
       user.id = persisted.id;
-      (user as { emailVerified?: boolean }).emailVerified = true;
-      (user as { authProvider?: "google" }).authProvider = "google";
       return true;
     },
     async jwt({ token, user }) {
-      if (user) {
-        token.emailVerified =
-          (user as { emailVerified?: boolean }).emailVerified === true ||
-          (user as { emailVerifiedAt?: string | null }).emailVerifiedAt != null;
-        token.authProvider =
-          (user as { authProvider?: "google" | "credentials" }).authProvider ??
-          (token.authProvider as "google" | "credentials" | null | undefined) ??
-          null;
-      }
-
       let userId =
         typeof user?.id === "string" && uuidRegex.test(user.id)
           ? user.id
@@ -155,19 +131,11 @@ const config = {
 
       if (!userId) return token;
       token.sub = userId;
-      const { authDbAvailable, getUserById } = await import("@/lib/auth-db");
-      if (authDbAvailable()) {
-        const record = await getUserById(userId);
-        token.emailVerified = record?.emailVerifiedAt != null;
-      }
       return token;
     },
     async session({ session, token }) {
       if (session.user) {
         (session.user as { id?: string }).id = typeof token.sub === "string" ? token.sub : undefined;
-        (session.user as { emailVerified?: boolean }).emailVerified = token.emailVerified === true;
-        (session.user as { authProvider?: "google" | "credentials" | null }).authProvider =
-          typeof token.authProvider === "string" ? (token.authProvider as "google" | "credentials") : null;
         (session.user as { planCode?: string | null }).planCode =
           typeof token.planCode === "string" ? token.planCode : null;
         (session.user as { subscriptionStatus?: string | null }).subscriptionStatus =

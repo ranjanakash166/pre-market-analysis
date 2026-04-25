@@ -24,17 +24,6 @@ type CredentialsRow = {
   password_hash: string;
 };
 
-type VerificationTokenRow = {
-  id: string;
-  user_id: string;
-  email: string;
-  token_hash: string;
-  sent_count: number;
-  last_sent_at: Date;
-  expires_at: Date;
-  used_at: Date | null;
-};
-
 function requireSql(): Sql {
   const sql = getSql();
   if (!sql) {
@@ -87,7 +76,7 @@ export async function createUserWithPassword(input: {
   const tx = await sql.begin(async (txn) => {
     const inserted = (await txn`
       INSERT INTO app_users (email, name, email_verified_at)
-      VALUES (${email}, ${input.name ?? null}, null)
+      VALUES (${email}, ${input.name ?? null}, now())
       RETURNING id, email, name, image, email_verified_at
     `) as AppUserRow[];
     const user = inserted[0];
@@ -103,69 +92,6 @@ export async function createUserWithPassword(input: {
     return user;
   });
   return toAppUser(tx);
-}
-
-export async function getVerificationTokenByUserId(userId: string): Promise<VerificationTokenRow | null> {
-  const sql = requireSql();
-  const rows = (await sql`
-    SELECT id, user_id, email, token_hash, sent_count, last_sent_at, expires_at, used_at
-    FROM email_verification_tokens
-    WHERE user_id = ${userId}
-    LIMIT 1
-  `) as VerificationTokenRow[];
-  return rows[0] ?? null;
-}
-
-export async function getVerificationTokenByHash(tokenHash: string): Promise<VerificationTokenRow | null> {
-  const sql = requireSql();
-  const rows = (await sql`
-    SELECT id, user_id, email, token_hash, sent_count, last_sent_at, expires_at, used_at
-    FROM email_verification_tokens
-    WHERE token_hash = ${tokenHash}
-    LIMIT 1
-  `) as VerificationTokenRow[];
-  return rows[0] ?? null;
-}
-
-export async function upsertVerificationToken(input: {
-  userId: string;
-  email: string;
-  tokenHash: string;
-  expiresAt: Date;
-  sentCount: number;
-}): Promise<void> {
-  const sql = requireSql();
-  await sql`
-    INSERT INTO email_verification_tokens (user_id, email, token_hash, sent_count, last_sent_at, expires_at, used_at, updated_at)
-    VALUES (${input.userId}, ${input.email.toLowerCase()}, ${input.tokenHash}, ${input.sentCount}, now(), ${input.expiresAt}, null, now())
-    ON CONFLICT (user_id) DO UPDATE
-      SET email = EXCLUDED.email,
-          token_hash = EXCLUDED.token_hash,
-          sent_count = EXCLUDED.sent_count,
-          last_sent_at = now(),
-          expires_at = EXCLUDED.expires_at,
-          used_at = null,
-          updated_at = now()
-  `;
-}
-
-export async function markVerificationTokenUsed(tokenHash: string): Promise<void> {
-  const sql = requireSql();
-  await sql`
-    UPDATE email_verification_tokens
-    SET used_at = now(), updated_at = now()
-    WHERE token_hash = ${tokenHash}
-  `;
-}
-
-export async function markUserEmailVerified(userId: string): Promise<void> {
-  const sql = requireSql();
-  await sql`
-    UPDATE app_users
-    SET email_verified_at = COALESCE(email_verified_at, now()),
-        updated_at = now()
-    WHERE id = ${userId}
-  `;
 }
 
 export async function getCredentialsByEmail(email: string): Promise<{

@@ -10,7 +10,6 @@
 4. Apply `db/schema.sql` to your Postgres database (includes Twickers ingest + auth/billing tables).
 5. Configure auth + billing envs in `.env.local`:
    - `AUTH_SECRET`, `AUTH_URL`, `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`
-   - `RESEND_API_KEY`, `AUTH_EMAIL_FROM` (for credentials email verification links)
    - `RAZORPAY_KEY_ID`, `RAZORPAY_KEY_SECRET`, `RAZORPAY_WEBHOOK_SECRET`
 6. Run:
 
@@ -29,8 +28,6 @@ Report JSON is stored on disk. On Vercel (`VERCEL=1`), files go under the server
 - `POST /api/generate` - generate report manually (`{ "mode": "A" }`)
 - `POST /api/cron/generate` - generate all modes (requires `x-cron-token`)
 - `POST /api/auth/register` - email/password registration
-- `GET /api/auth/verify-email?token=...` - consume email verification magic link
-- `POST /api/auth/verify-email/resend` - resend verification link with cooldown/limits
 - `POST /api/billing/checkout` - create Razorpay order/subscription for a plan
 - `POST /api/billing/verify` - verify Razorpay one-time payment signature
 - `POST /api/webhooks/razorpay` - Razorpay webhook ingestion (signature required)

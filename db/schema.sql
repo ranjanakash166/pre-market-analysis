@@ -139,22 +139,6 @@ CREATE TABLE IF NOT EXISTS user_credentials (
   created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
-CREATE TABLE IF NOT EXISTS email_verification_tokens (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_id UUID NOT NULL UNIQUE REFERENCES app_users (id) ON DELETE CASCADE,
-  email TEXT NOT NULL,
-  token_hash TEXT NOT NULL UNIQUE,
-  sent_count INT NOT NULL DEFAULT 1 CHECK (sent_count >= 1),
-  last_sent_at TIMESTAMPTZ NOT NULL DEFAULT now(),
-  expires_at TIMESTAMPTZ NOT NULL,
-  used_at TIMESTAMPTZ,
-  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
-  updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
-);
-
-CREATE INDEX IF NOT EXISTS email_verification_tokens_lookup_idx
-  ON email_verification_tokens (token_hash, expires_at, used_at);
-
 CREATE TABLE IF NOT EXISTS billing_plans (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   code TEXT NOT NULL UNIQUE,

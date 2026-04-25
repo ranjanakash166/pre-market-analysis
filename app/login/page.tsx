@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useEffect, useMemo, useState } from "react";
+import { FormEvent, useMemo, useState } from "react";
 import { signIn } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
 import { SITE_NAME } from "@/lib/branding";
@@ -19,6 +19,7 @@ export default function LoginPage() {
     () => (tab === "login" ? "Sign in to your account" : "Join us today"),
     [tab],
   );
+
   async function continueWithGoogle() {
     setLoadingGoogle(true);
     setError(null);
@@ -47,20 +48,7 @@ export default function LoginPage() {
         redirect: false,
       });
       if (!out || out.error) {
-        const statusRes = await fetch(`/api/auth/verify-email/status?email=${encodeURIComponent(email)}`).catch(
-          () => null,
-        );
-        const status = (await statusRes?.json().catch(() => ({}))) as {
-          exists?: boolean;
-          verified?: boolean;
-        };
-        if (status.exists && status.verified === false) {
-          window.location.href = `/verify-email?status=pending&email=${encodeURIComponent(email)}`;
-          setLoadingForm(false);
-          return;
-        } else {
-          setError("Invalid email/password or account not found.");
-        }
+        setError("Invalid email/password or account not found.");
         setLoadingForm(false);
         return;
       }
@@ -99,8 +87,20 @@ export default function LoginPage() {
         setLoadingForm(false);
         return;
       }
-      window.location.href = `/verify-email?status=pending&email=${encodeURIComponent(email)}`;
-      setLoadingForm(false);
+
+      const out = await signIn("credentials", {
+        email,
+        password,
+        callbackUrl: "/dashboard",
+        redirect: false,
+      });
+      if (!out || out.error) {
+        setNotice("Account created. Please sign in.");
+        setTab("login");
+        setLoadingForm(false);
+        return;
+      }
+      window.location.href = out.url ?? "/";
     } catch (e) {
       setError(e instanceof Error ? e.message : "Registration failed");
       setLoadingForm(false);
