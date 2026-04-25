@@ -67,7 +67,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section id="features" className="reveal-on-scroll mt-12">
+      <section id="features" className="reveal-on-scroll mt-12 scroll-mt-24">
         <h2 className="text-2xl font-bold tracking-tight text-white md:text-3xl">What you get before market open</h2>
         <p className="mt-2 max-w-3xl text-sm text-slate-400 md:text-base">
           One place to understand trend, risk, and opportunity. No over-analysis. No scattered screenshots.
@@ -108,7 +108,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section id="how-it-works" className="reveal-on-scroll mt-14">
+      <section id="how-it-works" className="reveal-on-scroll mt-14 scroll-mt-24">
         <h2 className="text-2xl font-bold tracking-tight text-white md:text-3xl">How it works</h2>
         <div className="mt-6 grid gap-4 md:grid-cols-3">
           {[
@@ -139,7 +139,7 @@ export default function HomePage() {
 
       <section
         id="x-feed-analysis"
-        className="reveal-on-scroll mt-14 rounded-3xl border border-white/[0.08] bg-[rgb(15_23_42_/0.45)] p-6 md:p-8"
+        className="reveal-on-scroll mt-14 scroll-mt-24 rounded-3xl border border-white/[0.08] bg-[rgb(15_23_42_/0.45)] p-6 md:p-8"
       >
         <h2 className="text-2xl font-bold tracking-tight text-white md:text-3xl">X feed analysis that catches what charts miss</h2>
         <p className="mt-2 max-w-3xl text-sm leading-relaxed text-slate-300 md:text-base">
@@ -170,7 +170,7 @@ export default function HomePage() {
 
       <section
         id="learn-module"
-        className="reveal-on-scroll mt-14 rounded-3xl border border-emerald-400/20 bg-emerald-500/[0.05] p-6 md:p-8"
+        className="reveal-on-scroll mt-14 scroll-mt-24 rounded-3xl border border-emerald-400/20 bg-emerald-500/[0.05] p-6 md:p-8"
       >
         <h2 className="text-2xl font-bold tracking-tight text-white md:text-3xl">Learn module to build profitable habits</h2>
         <p className="mt-2 max-w-3xl text-sm leading-relaxed text-emerald-100/90 md:text-base">
@@ -201,7 +201,7 @@ export default function HomePage() {
 
       <section
         id="pricing"
-        className="reveal-on-scroll mt-14 rounded-3xl border border-cyan-400/20 bg-cyan-400/[0.05] p-6 md:p-8"
+        className="reveal-on-scroll mt-14 scroll-mt-24 rounded-3xl border border-cyan-400/20 bg-cyan-400/[0.05] p-6 md:p-8"
       >
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div>
