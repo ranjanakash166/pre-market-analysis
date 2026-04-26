@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BookOpen, LayoutDashboard, Menu, Radio, X } from "lucide-react";
+import { BookOpen, Compass, LayoutDashboard, Menu, Radio, X } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
 import { SITE_NAME } from "@/lib/branding";
 
@@ -34,6 +34,7 @@ export function NavBar() {
   const onDashboard = pathname === "/dashboard";
   const onXFeed = pathname === "/x";
   const onLearn = pathname === "/learn" || pathname.startsWith("/learn/");
+  const onStrategy = pathname === "/strategy" || pathname.startsWith("/strategy/");
   const onSubscribe = pathname === "/subscribe";
   const onBilling = pathname === "/account/billing";
   const isLoggedIn = status === "authenticated" && !!session?.user?.id;
@@ -98,6 +99,18 @@ export function NavBar() {
               >
                 <BookOpen className="h-4 w-4 opacity-80" aria-hidden />
                 <span className="hidden sm:inline">Learn</span>
+              </Link>
+
+              <Link
+                href="/strategy"
+                className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-medium transition ${
+                  onStrategy
+                    ? "bg-white/[0.07] text-amber-100 ring-1 ring-amber-500/25"
+                    : "text-slate-400 hover:bg-white/[0.05] hover:text-slate-200"
+                }`}
+              >
+                <Compass className="h-4 w-4 opacity-80" aria-hidden />
+                <span className="hidden sm:inline">Strategy</span>
               </Link>
 
               {!onSubscribe ? (
@@ -242,6 +255,17 @@ export function NavBar() {
                   }`}
                 >
                   Learn
+                </Link>
+                <Link
+                  href="/strategy"
+                  onClick={closeMenu}
+                  className={`rounded-xl px-3 py-2 text-sm font-medium transition ${
+                    onStrategy
+                      ? "bg-white/[0.07] text-amber-100 ring-1 ring-amber-500/25"
+                      : "text-slate-300 hover:bg-white/[0.05] hover:text-slate-100"
+                  }`}
+                >
+                  Strategy
                 </Link>
                 {!onSubscribe ? (
                   <Link

@@ -1,0 +1,12 @@
+{
+  "strategies": [
+    {
+      "slug": "hni-nifty-biweekly",
+      "title": "HNI Nifty Bi-Weekly Structure",
+      "summary": "A rules-first Nifty options structure with fixed entry timing, capital-based target/stop, and weighted OTM leg selection.",
+      "category": "Option Selling",
+      "thumbnailUrl": "/strategies/hni-strategy.png",
+      "riskLevel": "Medium"
+    }
+  ]
+}

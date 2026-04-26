@@ -1,0 +1,61 @@
+{
+  "slug": "hni-nifty-biweekly",
+  "title": "HNI Nifty Bi-Weekly Structure",
+  "summary": "Image-backed strategy blueprint for Nifty with a Monday 9:45 AM entry, defined target/stop loss, and weighted CE strike selection.",
+  "category": "Option Selling",
+  "riskLevel": "Medium",
+  "snapshot": {
+    "script": "NIFTY",
+    "duration": "5 Days",
+    "expiry": "Bi-Weekly",
+    "entryDate": "Monday (8 DTE)",
+    "entryTime": "09:45 AM",
+    "target": "1% on deployed capital",
+    "stopLoss": "1% on deployed capital"
+  },
+  "image": {
+    "src": "/strategies/hni-strategy.png",
+    "alt": "HNI strategy sheet with setup table and strike selection diagram"
+  },
+  "strikeSelection": [
+    {
+      "label": "200 Points OTM",
+      "distanceFromSpot": "200 points",
+      "optionType": "CE",
+      "weight": "x",
+      "side": "Buy"
+    },
+    {
+      "label": "400 Points OTM",
+      "distanceFromSpot": "400 points",
+      "optionType": "CE",
+      "weight": "3x",
+      "side": "Sell"
+    },
+    {
+      "label": "600 Points OTM",
+      "distanceFromSpot": "600 points",
+      "optionType": "CE",
+      "weight": "2x",
+      "side": "Buy"
+    }
+  ],
+  "rules": [
+    "Prepare the structure before market open and validate margin availability before entry.",
+    "Enter the planned position around 09:45 AM on Monday for the 8 DTE bi-weekly cycle.",
+    "Use pre-defined capital allocation only; avoid adding discretionary legs after entry.",
+    "Track running PnL against deployed capital percentage, not absolute rupee emotion.",
+    "Exit at either target or stop loss without averaging into losing exposure."
+  ],
+  "riskNotes": [
+    "Risk first: even defined structures can face gap risk and volatility expansion.",
+    "Do not increase lot size to recover losses after a stop-loss trigger.",
+    "Slippage near open and around events can materially affect realized outcomes.",
+    "If market conditions are abnormal (major macro event), skip execution."
+  ],
+  "disclaimer": [
+    "Educational content only; this is not investment advice.",
+    "Options involve substantial risk and may lead to capital loss.",
+    "Backtest, paper-trade, and validate execution constraints before deploying capital."
+  ]
+}
