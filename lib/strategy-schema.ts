@@ -8,6 +8,9 @@ export const strategySnapshotSchema = z.object({
   entryTime: z.string().min(1),
   target: z.string().min(1),
   stopLoss: z.string().min(1),
+  /** Optional extra rows from strategy sheets (e.g. debit/credit caps). */
+  debitOnDownside: z.string().min(1).optional(),
+  maxCredit: z.string().min(1).optional(),
 });
 
 export const strategyStrikeLegSchema = z.object({
@@ -37,6 +40,8 @@ export const strategyDetailSchema = z.object({
   summary: z.string().min(1),
   category: z.string().min(1),
   riskLevel: z.enum(["Low", "Medium", "High"]).optional(),
+  /** Short callout shown under snapshot (risk-first framing). */
+  riskFirstNote: z.string().min(1).optional(),
   snapshot: strategySnapshotSchema,
   image: z.object({
     src: z.string().min(1),

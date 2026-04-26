@@ -34,8 +34,10 @@ function snapshotRows(snapshot: {
   entryTime: string;
   target: string;
   stopLoss: string;
+  debitOnDownside?: string;
+  maxCredit?: string;
 }): Array<{ label: string; value: string }> {
-  return [
+  const rows: Array<{ label: string; value: string }> = [
     { label: "Script", value: snapshot.script },
     { label: "Duration", value: snapshot.duration },
     { label: "Expiry", value: snapshot.expiry },
@@ -44,6 +46,13 @@ function snapshotRows(snapshot: {
     { label: "Target", value: snapshot.target },
     { label: "Stop loss", value: snapshot.stopLoss },
   ];
+  if (snapshot.debitOnDownside) {
+    rows.push({ label: "Debit on downside", value: snapshot.debitOnDownside });
+  }
+  if (snapshot.maxCredit) {
+    rows.push({ label: "Max credit", value: snapshot.maxCredit });
+  }
+  return rows;
 }
 
 export default async function StrategyDetailPage({ params }: PageProps) {
@@ -84,6 +93,12 @@ export default async function StrategyDetailPage({ params }: PageProps) {
             </div>
           ))}
         </div>
+        {strategy.riskFirstNote ? (
+          <p className="mt-4 rounded-xl border border-amber-500/25 bg-amber-950/25 px-4 py-3 text-sm leading-relaxed text-amber-50">
+            <span className="font-semibold text-amber-200">Risk first: </span>
+            {strategy.riskFirstNote}
+          </p>
+        ) : null}
       </section>
 
       <section className="mb-10 overflow-hidden rounded-2xl border border-white/[0.08] bg-black/25 shadow-2xl shadow-black/25">

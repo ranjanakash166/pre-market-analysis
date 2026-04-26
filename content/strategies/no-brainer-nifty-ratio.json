@@ -1,0 +1,64 @@
+{
+  "slug": "no-brainer-nifty-ratio",
+  "title": "No Brainer Nifty Ratio",
+  "summary": "Monthly Nifty ratio-style call structure with a last-Friday entry, defined capital-based target and stop, and capped debit/credit parameters alongside a three-leg CE diagram.",
+  "category": "Option Selling",
+  "riskLevel": "Medium",
+  "riskFirstNote": "Respect the debit-on-downside and max-credit caps before entry; if the market does not fit the sheet, skip the trade.",
+  "snapshot": {
+    "script": "NIFTY",
+    "duration": "15 to 20 Days",
+    "expiry": "Monthly",
+    "entryDate": "Last Friday of month",
+    "entryTime": "3:16 PM (Friday)",
+    "target": "2.5% on deployed capital",
+    "stopLoss": "3% on deployed capital",
+    "debitOnDownside": "Less than or equal to 1%",
+    "maxCredit": "Not more than 1%"
+  },
+  "image": {
+    "src": "/strategies/no-brainer-nifty-ratio.png",
+    "alt": "No Brainer Nifty Ratio strategy sheet with parameters and strike diagram"
+  },
+  "strikeSelection": [
+    {
+      "label": "Long leg",
+      "distanceFromSpot": "300 points OTM",
+      "optionType": "CE",
+      "weight": "x",
+      "side": "Buy"
+    },
+    {
+      "label": "Short leg (ratio)",
+      "distanceFromSpot": "300 points OTM (2x sell)",
+      "optionType": "CE",
+      "weight": "2x",
+      "side": "Sell"
+    },
+    {
+      "label": "Long wing",
+      "distanceFromSpot": "1000 points OTM",
+      "optionType": "CE",
+      "weight": "x",
+      "side": "Buy"
+    }
+  ],
+  "rules": [
+    "Plan the full three-leg structure before the last Friday of the month; confirm monthly expiry and margin requirements.",
+    "Execute at the stated Friday time (3:16 PM) only if quotes and liquidity support the intended strikes and ratios.",
+    "Size positions so that target and stop-loss percentages refer to deployed capital, not notional exposure alone.",
+    "Honor the debit-on-downside and max-credit constraints from the sheet; if live quotes violate them, do not force the entry.",
+    "Document actual fills and adjust only within the playbook—no discretionary add-ons mid-trade."
+  ],
+  "riskNotes": [
+    "Ratio structures can behave sharply around spot; gap risk and pin risk remain material.",
+    "A wider wing (1000 OTM) changes payoff shape; validate the structure with your broker’s margin simulator.",
+    "Late-week entries can face reduced liquidity; slippage may erode the intended risk/reward.",
+    "Skip if major scheduled events overlap the holding window unless your process explicitly allows them."
+  ],
+  "disclaimer": [
+    "Educational content only; this is not investment advice.",
+    "Options involve substantial risk of loss.",
+    "Verify strikes, ratios, and margin with your broker and exchange before trading."
+  ]
+}

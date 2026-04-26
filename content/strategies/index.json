@@ -7,6 +7,14 @@
       "category": "Option Selling",
       "thumbnailUrl": "/strategies/hni-strategy.png",
       "riskLevel": "Medium"
+    },
+    {
+      "slug": "no-brainer-nifty-ratio",
+      "title": "No Brainer Nifty Ratio",
+      "summary": "Monthly Nifty ratio call playbook with last-Friday entry, capital-based target/stop, debit/credit caps, and three-leg CE selection.",
+      "category": "Option Selling",
+      "thumbnailUrl": "/strategies/no-brainer-nifty-ratio.png",
+      "riskLevel": "Medium"
     }
   ]
 }
