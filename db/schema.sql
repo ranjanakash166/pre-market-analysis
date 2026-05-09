@@ -211,3 +211,43 @@ CREATE TABLE IF NOT EXISTS billing_events (
   created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
   UNIQUE (provider, event_id)
 );
+
+-- ------------------------------
+-- Trading Journal
+-- ------------------------------
+
+CREATE TABLE IF NOT EXISTS trade_journal_entries (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID NOT NULL REFERENCES app_users (id) ON DELETE CASCADE,
+  trade_date DATE NOT NULL,
+  exit_date DATE,
+  symbol TEXT NOT NULL,
+  instrument_type TEXT NOT NULL CHECK (instrument_type IN ('equity', 'futures', 'options')),
+  side TEXT NOT NULL CHECK (side IN ('long', 'short')),
+  quantity NUMERIC(18, 4) NOT NULL CHECK (quantity > 0),
+  entry_price NUMERIC(18, 4) NOT NULL CHECK (entry_price > 0),
+  exit_price NUMERIC(18, 4) CHECK (exit_price IS NULL OR exit_price > 0),
+  stop_loss NUMERIC(18, 4) CHECK (stop_loss IS NULL OR stop_loss > 0),
+  target_price NUMERIC(18, 4) CHECK (target_price IS NULL OR target_price > 0),
+  fees NUMERIC(18, 4) CHECK (fees IS NULL OR fees >= 0),
+  broker TEXT,
+  setup_tag TEXT,
+  entry_reason TEXT,
+  exit_reason TEXT,
+  mistakes TEXT,
+  lessons TEXT,
+  status TEXT NOT NULL CHECK (status IN ('open', 'closed')),
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  CHECK (exit_date IS NULL OR exit_date >= trade_date),
+  CHECK (
+    (status = 'open' AND exit_price IS NULL)
+    OR (status = 'closed' AND exit_price IS NOT NULL)
+  )
+);
+
+CREATE INDEX IF NOT EXISTS trade_journal_entries_user_trade_date_idx
+  ON trade_journal_entries (user_id, trade_date DESC, created_at DESC);
+
+CREATE INDEX IF NOT EXISTS trade_journal_entries_user_status_trade_date_idx
+  ON trade_journal_entries (user_id, status, trade_date DESC, created_at DESC);
