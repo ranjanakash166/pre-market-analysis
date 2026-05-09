@@ -26,28 +26,31 @@ const optionalPositiveNumberSchema = z.coerce.number().finite().positive().nulla
 const optionalNonNegativeNumberSchema = z.coerce.number().finite().min(0).nullable().optional();
 const isoDateSchema = z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Expected date in YYYY-MM-DD format.");
 
-export const tradeJournalEntryInputSchema = z
-  .object({
-    tradeDate: isoDateSchema,
-    exitDate: isoDateSchema.nullable().optional(),
-    symbol: z.string().trim().min(1).max(40).transform((value) => value.toUpperCase()),
-    instrumentType: tradeInstrumentTypeSchema,
-    side: tradeSideSchema,
-    quantity: positiveNumberSchema,
-    entryPrice: positiveNumberSchema,
-    exitPrice: optionalPositiveNumberSchema,
-    stopLoss: optionalPositiveNumberSchema,
-    targetPrice: optionalPositiveNumberSchema,
-    fees: optionalNonNegativeNumberSchema,
-    broker: optionalShortTextSchema,
-    setupTag: optionalShortTextSchema,
-    entryReason: optionalTextSchema,
-    exitReason: optionalTextSchema,
-    mistakes: optionalTextSchema,
-    lessons: optionalTextSchema,
-    status: tradeStatusSchema,
-  })
-  .superRefine((value, ctx) => {
+const tradeJournalEntryBaseSchema = z.object({
+  tradeDate: isoDateSchema,
+  exitDate: isoDateSchema.nullable().optional(),
+  symbol: z.string().trim().min(1).max(40).transform((value) => value.toUpperCase()),
+  instrumentType: tradeInstrumentTypeSchema,
+  side: tradeSideSchema,
+  quantity: positiveNumberSchema,
+  entryPrice: positiveNumberSchema,
+  exitPrice: optionalPositiveNumberSchema,
+  stopLoss: optionalPositiveNumberSchema,
+  targetPrice: optionalPositiveNumberSchema,
+  fees: optionalNonNegativeNumberSchema,
+  broker: optionalShortTextSchema,
+  setupTag: optionalShortTextSchema,
+  entryReason: optionalTextSchema,
+  exitReason: optionalTextSchema,
+  mistakes: optionalTextSchema,
+  lessons: optionalTextSchema,
+  status: tradeStatusSchema,
+});
+
+function applyTradeJournalEntryRules(
+  value: z.infer<typeof tradeJournalEntryBaseSchema>,
+  ctx: z.RefinementCtx,
+) {
     if (value.status === "closed" && value.exitPrice == null) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
@@ -87,9 +90,11 @@ export const tradeJournalEntryInputSchema = z
         message: "Exit date cannot be before trade date.",
       });
     }
-  });
+}
 
-export const tradeJournalEntryPatchSchema = tradeJournalEntryInputSchema.partial();
+export const tradeJournalEntryInputSchema = tradeJournalEntryBaseSchema.superRefine(applyTradeJournalEntryRules);
+
+export const tradeJournalEntryPatchSchema = tradeJournalEntryBaseSchema.partial();
 
 export const tradeJournalFiltersSchema = z.object({
   status: z.enum(["all", "open", "closed"]).default("all"),
