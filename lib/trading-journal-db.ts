@@ -140,19 +140,41 @@ function normalizeInput(input: TradeJournalEntryInput) {
 
 export async function listTradeJournalEntries(userId: string, filters: TradeJournalFilters) {
   const sql = requireSql();
-  const rows = (await sql`
-    SELECT
-      id, trade_date, exit_date, symbol, instrument_type, side, quantity, entry_price,
-      exit_price, stop_loss, target_price, fees, broker, setup_tag, entry_reason,
-      exit_reason, mistakes, lessons, status, created_at, updated_at
-    FROM trade_journal_entries
-    WHERE user_id = ${userId}
-      AND (${filters.status ?? "all"} = 'all' OR status = ${filters.status ?? "all"})
-      AND (${filters.instrumentType ?? "all"} = 'all' OR instrument_type = ${filters.instrumentType ?? "all"})
-      AND (${filters.setupTag ?? null} IS NULL OR setup_tag = ${filters.setupTag ?? null})
-      AND (${filters.search ?? null} IS NULL OR symbol ILIKE ${`%${filters.search ?? ""}%`})
-    ORDER BY trade_date DESC, created_at DESC
-  `) as TradeJournalRow[];
+  const values: Array<string> = [userId];
+  let whereClause = "user_id = $1";
+
+  if (filters.status && filters.status !== "all") {
+    values.push(filters.status);
+    whereClause += ` AND status = $${values.length}`;
+  }
+
+  if (filters.instrumentType && filters.instrumentType !== "all") {
+    values.push(filters.instrumentType);
+    whereClause += ` AND instrument_type = $${values.length}`;
+  }
+
+  if (filters.setupTag) {
+    values.push(filters.setupTag);
+    whereClause += ` AND setup_tag = $${values.length}`;
+  }
+
+  if (filters.search) {
+    values.push(`%${filters.search}%`);
+    whereClause += ` AND symbol ILIKE $${values.length}`;
+  }
+
+  const rows = (await sql.unsafe(
+    `
+      SELECT
+        id, trade_date, exit_date, symbol, instrument_type, side, quantity, entry_price,
+        exit_price, stop_loss, target_price, fees, broker, setup_tag, entry_reason,
+        exit_reason, mistakes, lessons, status, created_at, updated_at
+      FROM trade_journal_entries
+      WHERE ${whereClause}
+      ORDER BY trade_date DESC, created_at DESC
+    `,
+    values,
+  )) as TradeJournalRow[];
 
   const tagRows = (await sql`
     SELECT DISTINCT setup_tag
