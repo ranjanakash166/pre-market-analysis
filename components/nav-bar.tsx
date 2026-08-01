@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BookOpen, Compass, LayoutDashboard, Menu, NotebookPen, Radio, X } from "lucide-react";
+import { BookOpen, CalendarDays, Compass, LayoutDashboard, Menu, NotebookPen, Radio, X } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
 import { SITE_NAME } from "@/lib/branding";
 
@@ -34,6 +34,7 @@ export function NavBar() {
   const onDashboard = pathname === "/dashboard";
   const onXFeed = pathname === "/x";
   const onJournal = pathname === "/journal";
+  const onPriorDay = pathname === "/prior-day" || pathname.startsWith("/prior-day/");
   const onLearn = pathname === "/learn" || pathname.startsWith("/learn/");
   const onStrategy = pathname === "/strategy" || pathname.startsWith("/strategy/");
   const onSubscribe = pathname === "/subscribe";
@@ -100,6 +101,18 @@ export function NavBar() {
               >
                 <NotebookPen className="h-4 w-4 opacity-80" aria-hidden />
                 <span className="hidden sm:inline">Trading Journal</span>
+              </Link>
+
+              <Link
+                href="/prior-day"
+                className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-medium transition ${
+                  onPriorDay
+                    ? "bg-white/[0.07] text-amber-100 ring-1 ring-amber-500/25"
+                    : "text-slate-400 hover:bg-white/[0.05] hover:text-slate-200"
+                }`}
+              >
+                <CalendarDays className="h-4 w-4 opacity-80" aria-hidden />
+                <span className="hidden sm:inline">Prior day</span>
               </Link>
 
               <Link
@@ -268,6 +281,17 @@ export function NavBar() {
                   }`}
                 >
                   Trading Journal
+                </Link>
+                <Link
+                  href="/prior-day"
+                  onClick={closeMenu}
+                  className={`rounded-xl px-3 py-2 text-sm font-medium transition ${
+                    onPriorDay
+                      ? "bg-white/[0.07] text-amber-100 ring-1 ring-amber-500/25"
+                      : "text-slate-300 hover:bg-white/[0.05] hover:text-slate-100"
+                  }`}
+                >
+                  Prior day
                 </Link>
                 <Link
                   href="/learn"

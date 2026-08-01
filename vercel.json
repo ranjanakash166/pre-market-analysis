@@ -7,6 +7,10 @@
     {
       "path": "/api/cron/x/sync",
       "schedule": "30 3 * * *"
+    },
+    {
+      "path": "/api/cron/prior-day/sync",
+      "schedule": "15 12 * * 1-5"
     }
   ]
 }

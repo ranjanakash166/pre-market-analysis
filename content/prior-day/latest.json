@@ -1,0 +1,78 @@
+{
+  "updatedAt": "2026-08-01T11:51:38.644Z",
+  "source": "sensibull",
+  "days": [
+    {
+      "date": "2026-07-31",
+      "title": "Nifty and Bank Nifty Analysis for 31 Jul",
+      "chart": "NIFTY forming a small green candle. BANKNIFTY forming a dragonfly Doji with a rejection wick at bottom that normally means strength.\nNIFTY weekly candle Marubozu. BANKNIFTY weekly candle bullish hammer.\nNIFTY monthly candle - positive candle confirming the last month's Bullish Harami candle.\nBANKNIFTY forming Doji after recovery",
+      "openInterest": "24300 and below support. 24500+ is resistance",
+      "pcr": "1 around ATM. 1.3 overall - Strong",
+      "participantOptionsData": "No significant activity in Options",
+      "fiiFuturesData": "FII bought 1300 Cr in futures",
+      "fiiStockData": "FII bought 3600 Cr. Big buy figure last two days!",
+      "verdict": "Market likely to go up further till a genuine reversal signal comes. There is gap at 25100, that could be one eventual target",
+      "trades": "Still a buy on dips market. We may test today's gap once in coming days - that could be our long side entry opportunity. Still with bull put spreads of August end expiries as the trade"
+    },
+    {
+      "date": "2026-07-30",
+      "title": "Nifty and Bank Nifty Analysis for 30 Jul",
+      "chart": "Both indices gap up and sustained. NIFTY forming Bullish Marubozu. BANKNIFTY forming Doji",
+      "openInterest": "NIFTY - 24200 and below is support. SENSEX - 77500 and below is support",
+      "pcr": "NIFTY - 0.9 around ATM and 1.2 overall\nSENSEX - 1.1 around ATM and 1.8 overall (1.8 is overheated)",
+      "participantOptionsData": "Wednesday's OI change - FII Pro Bullish, client bearish",
+      "fiiFuturesData": "FII bought 1700 Cr in futures.\nFII short OI has dropped significantly in August compared to July",
+      "fiiStockData": "FII bought 3000 Cr in cash",
+      "verdict": "Market looks strong - despite all that is happening in US-Iran front. But tomorrow we may not see massive strength unless the tensions resolve.\nBut Fed interest rate decision today could overshadow everything else. So event risk",
+      "trades": "Still a buy on dips market. We may test today's gap once in coming days - that could be our long side entry opportunity. Still with bull put spreads of August end expiries as the trade"
+    },
+    {
+      "date": "2026-07-29",
+      "title": "Nifty and Bank Nifty Analysis for 29 Jul",
+      "chart": "Both indices flat with tiny Dojis. May be expiry management (iykyk). There is no suggestion of weakness in either",
+      "openInterest": "SENSEX has some resistance at 77000 but if its gone, we have violent short covering",
+      "pcr": "1.1 overal and around the ATM in SENSEX - Strong",
+      "participantOptionsData": "No meaning for change today due to expiry",
+      "fiiFuturesData": "We cannot infer anything today as monthly futures expired. In 1-2 days we will know rollover status",
+      "fiiStockData": "Cash buying is also not straight forward because there could be cash - fut arbitrage on expiry",
+      "verdict": "Expect bullishness in the days ahead",
+      "trades": "Bull Call spreads or bull put spreads for farther expiries. August likely to be Bullish"
+    },
+    {
+      "date": "2026-07-28",
+      "title": "Nifty and Bank Nifty Analysis for 28 Jul",
+      "chart": "Both indices gapping up. NIFTY forming a small green candle after gap. BANKNIFTY forming a Doji Cross.\nMonthly candles have turned around in the last week to become positive. Usually this is strength",
+      "openInterest": "24000 is a support. First real resistance at 24200. One risk - almost all put OI was written today. Sometimes this backfires and creates a weak expiry day",
+      "pcr": "1.1 overall and around ATM - strong",
+      "participantOptionsData": "Monday's OI change - FII Bullish, client and pro Bearish",
+      "fiiFuturesData": "FII bought 600+ Cr in futures",
+      "fiiStockData": "FII sold 1700 Cr in cash",
+      "verdict": "Expiry is a little tricky because of the last minute put writing. So no predictions for tomorrow's expiry. After tomorrow market likely headed much higher",
+      "trades": "Bull Call spreads or bull put spreads for farther expiries. August likely to be Bullish"
+    },
+    {
+      "date": "2026-07-27",
+      "title": "Nifty and Bank Nifty Analysis for 27 Jul",
+      "chart": "Green Marubozu candles on both indices. NIFTY bounces from gap. Weekly candle red, but monthly candle can go either way",
+      "openInterest": "23800 and below had decent support. 24000 is a huge resistance though",
+      "pcr": "1 around ATM. 0.8 overall. Neutral to Bullish",
+      "participantOptionsData": "Friday OI change - FII and Pro Bullish. Client Bearish",
+      "fiiFuturesData": "FII sold 1200 Cr in futures",
+      "fiiStockData": "FII sold nearly 4000 Cr in cash",
+      "verdict": "Most likely tomorrow we will see a gap up open. Highly likely to sustain and push",
+      "trades": "Bull Put Spreads with small bet size because the market unlikely to have big downside"
+    },
+    {
+      "date": "2026-07-24",
+      "title": "Nifty and Bank Nifty Analysis for 24 Jul",
+      "chart": "Both indices showing weakness. NIFTY head towards 23600 zone where there is a gapfill. \nLast week's bullish engulfing candle invalidated in both indices. We have bearish Marubozu weekly candles in both indices. Monthly candles also turning",
+      "openInterest": "24000+ is a resistance",
+      "pcr": "0.8 around ATM and 0.7 overall",
+      "participantOptionsData": "Thursday's change - FII bearish, Pro neutral, Client Bullish",
+      "fiiFuturesData": "FII sold 1800 Cr in futures",
+      "fiiStockData": "FII sold 3000 Cr in cash",
+      "verdict": "High chance that NIFTY will test 23600 gap fill zone. If that holds, we might have a bounce. Else we are heading way lower, may be even below 23000",
+      "trades": "Wait and watch the price action at 23600, and take a decision. There is a possibility of a bounce at 23600 zone because gap fill. We have to see if that bounce sustains or not"
+    }
+  ]
+}

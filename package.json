@@ -8,7 +8,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
-    "learn:generate": "tsx scripts/generate-learn-course.ts"
+    "learn:generate": "tsx scripts/generate-learn-course.ts",
+    "prior-day:sync": "tsx scripts/sync-prior-day.ts"
   },
   "repository": {
     "type": "git",
