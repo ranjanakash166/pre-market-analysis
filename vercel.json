@@ -10,7 +10,7 @@
     },
     {
       "path": "/api/cron/prior-day/sync",
-      "schedule": "15 12 * * 1-5"
+      "schedule": "30 17 * * 1-5"
     }
   ]
 }

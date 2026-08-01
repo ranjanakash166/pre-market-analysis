@@ -5,7 +5,9 @@ import { RefreshCw } from "lucide-react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { FEATURE_PRE_MARKET, SITE_NAME, SITE_TAGLINE } from "@/lib/branding";
+import { PriorDayLatestPreview } from "@/components/prior-day-analysis";
 import { ReportTabs } from "@/components/report-tabs";
+import type { PriorDayAnalysis, PriorDayCatalog } from "@/lib/prior-day-schema";
 import type { GeneratedReport, TraderMode } from "@/types/report";
 
 const MODES: TraderMode[] = ["A", "B", "C"];
@@ -25,6 +27,7 @@ export default function DashboardPage() {
   const [error, setError] = useState<string | null>(null);
   const [hasNoCachedReport, setHasNoCachedReport] = useState(false);
   const [updatedAt, setUpdatedAt] = useState<string | null>(null);
+  const [latestPriorDay, setLatestPriorDay] = useState<PriorDayAnalysis | null>(null);
 
   async function fetchReport(nextMode: TraderMode) {
     setLoading(true);
@@ -97,6 +100,25 @@ export default function DashboardPage() {
     void fetchReport(mode);
   }, [mode]);
 
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const response = await fetch("/api/prior-day", { cache: "no-store" });
+        if (!response.ok) return;
+        const data = (await response.json()) as PriorDayCatalog;
+        if (!cancelled && data.days?.[0]) {
+          setLatestPriorDay(data.days[0]);
+        }
+      } catch {
+        // Non-blocking: prior-day preview should not break the briefing UI.
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   return (
     <main className="mx-auto max-w-7xl px-4 pb-16 pt-8 md:px-8 md:pt-10">
       <div className="mb-10 md:mb-12">
@@ -119,6 +141,8 @@ export default function DashboardPage() {
           </p>
         </section>
       ) : null}
+
+      {latestPriorDay ? <PriorDayLatestPreview day={latestPriorDay} /> : null}
 
       <section className="mb-10 rounded-2xl border border-white/[0.08] bg-[rgb(15_23_42_/0.55)] p-5 shadow-xl shadow-black/20 backdrop-blur-md md:p-6">
         <div className="mb-5 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
