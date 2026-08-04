@@ -2,7 +2,11 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { BookOpenText, Pencil, Plus, Search, Trash2, TrendingUp } from "lucide-react";
+import { BookOpenText, Pencil, Plus, Search, Trash2, TrendingDown, TrendingUp } from "lucide-react";
+import {
+  aggregateJournalAnalytics,
+  journalSideWarnings,
+} from "@/lib/trading-journal-analytics";
 import type {
   TradeInstrumentType,
   TradeJournalEntry,
@@ -200,17 +204,19 @@ export function JournalManager() {
     [entries, selectedEntryId],
   );
 
-  const stats = useMemo(() => {
-    const closedWithPnl = entries.filter((entry) => entry.status === "closed" && entry.netPnl != null);
-    const wins = closedWithPnl.filter((entry) => (entry.netPnl ?? 0) > 0).length;
-    return {
-      total: entries.length,
-      open: entries.filter((entry) => entry.status === "open").length,
-      closed: entries.filter((entry) => entry.status === "closed").length,
-      totalNetPnl: entries.reduce((sum, entry) => sum + (entry.netPnl ?? 0), 0),
-      winRate: closedWithPnl.length > 0 ? (wins / closedWithPnl.length) * 100 : null,
-    };
-  }, [entries]);
+  const analytics = useMemo(() => aggregateJournalAnalytics(entries), [entries]);
+
+  const formWarnings = useMemo(() => {
+    const entryN = formState.entryPrice ? Number(formState.entryPrice) : null;
+    const stopN = formState.stopLoss ? Number(formState.stopLoss) : null;
+    const targetN = formState.targetPrice ? Number(formState.targetPrice) : null;
+    return journalSideWarnings({
+      side: formState.side,
+      entryPrice: Number.isFinite(entryN as number) ? entryN : null,
+      stopLoss: Number.isFinite(stopN as number) ? stopN : null,
+      targetPrice: Number.isFinite(targetN as number) ? targetN : null,
+    });
+  }, [formState.side, formState.entryPrice, formState.stopLoss, formState.targetPrice]);
 
   function openCreateForm() {
     setEditingId(null);
@@ -302,22 +308,98 @@ export function JournalManager() {
         </div>
       </section>
 
-      <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
-        {[
-          { label: "Total trades", value: stats.total },
-          { label: "Open", value: stats.open },
-          { label: "Closed", value: stats.closed },
-          { label: "Total net P&L", value: toCurrency(stats.totalNetPnl) },
-          { label: "Win rate", value: stats.winRate == null ? "—" : toPercent(stats.winRate) },
-        ].map((item) => (
-          <article
-            key={item.label}
-            className="rounded-2xl border border-white/[0.08] bg-[rgb(15_23_42_/0.48)] p-4 shadow-lg shadow-black/10"
-          >
-            <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">{item.label}</p>
-            <p className="mt-2 text-2xl font-semibold text-white">{item.value}</p>
-          </article>
-        ))}
+      <section className="space-y-4">
+        <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
+          {[
+            { label: "Total trades", value: analytics.total },
+            { label: "Open", value: analytics.open },
+            { label: "Closed", value: analytics.closed },
+            { label: "Total net P&L", value: toCurrency(analytics.totalNetPnl) },
+            {
+              label: "Win rate",
+              value: analytics.winRatePercent == null ? "—" : toPercent(analytics.winRatePercent),
+            },
+          ].map((item) => (
+            <article
+              key={item.label}
+              className="rounded-2xl border border-white/[0.08] bg-[rgb(15_23_42_/0.48)] p-4 shadow-lg shadow-black/10"
+            >
+              <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">{item.label}</p>
+              <p className="mt-2 text-2xl font-semibold text-white">{item.value}</p>
+            </article>
+          ))}
+        </div>
+
+        <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+          {[
+            {
+              label: "Win : Loss",
+              value:
+                analytics.winLossRatio == null
+                  ? analytics.wins > 0 && analytics.losses === 0
+                    ? `${analytics.wins} : 0`
+                    : "—"
+                  : `${analytics.winLossRatio.toFixed(2)} : 1`,
+              hint: `${analytics.wins}W / ${analytics.losses}L` + (analytics.flats ? ` / ${analytics.flats} flat` : ""),
+            },
+            {
+              label: "Avg planned R:R",
+              value: analytics.avgPlannedRr == null ? "—" : `${analytics.avgPlannedRr.toFixed(2)} : 1`,
+              hint:
+                analytics.plannedRrSampleSize > 0
+                  ? `n=${analytics.plannedRrSampleSize} closed with SL+target`
+                  : "Needs SL + target on closed trades",
+            },
+            {
+              label: "Avg realized R",
+              value: analytics.avgRealizedR == null ? "—" : `${analytics.avgRealizedR.toFixed(2)}R`,
+              hint:
+                analytics.realizedRSampleSize > 0
+                  ? `n=${analytics.realizedRSampleSize} · price units (ex-fees)`
+                  : "Needs SL on closed trades",
+            },
+            {
+              label: "Breakeven win rate",
+              value:
+                analytics.breakevenWinRatePercent == null
+                  ? "—"
+                  : toPercent(analytics.breakevenWinRatePercent),
+              hint: "From average planned R:R",
+            },
+          ].map((item) => (
+            <article
+              key={item.label}
+              className="rounded-2xl border border-white/[0.08] bg-[rgb(15_23_42_/0.48)] p-4 shadow-lg shadow-black/10"
+            >
+              <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">{item.label}</p>
+              <p className="mt-2 text-2xl font-semibold text-white">{item.value}</p>
+              <p className="mt-1 text-xs text-slate-500">{item.hint}</p>
+            </article>
+          ))}
+        </div>
+
+        <RrEffectivenessBanner analytics={analytics} />
+
+        <div className="grid gap-3 md:grid-cols-2">
+          <ExtremeTradeCard
+            title="Best win"
+            icon={<TrendingUp className="h-4 w-4 text-emerald-300" aria-hidden />}
+            trade={analytics.bestTrade}
+            tone="win"
+          />
+          <ExtremeTradeCard
+            title="Worst loss"
+            icon={<TrendingDown className="h-4 w-4 text-rose-300" aria-hidden />}
+            trade={analytics.worstTrade}
+            tone="loss"
+          />
+        </div>
+
+        <p className="text-xs text-slate-500">
+          Stats respect the filters below. Win rate / win:loss use net P&amp;L (fees included). Planned and
+          realized R use price units so fees do not distort the R multiple. Open trades are excluded from
+          win/loss and R averages.
+        </p>
       </section>
 
       <section className="rounded-2xl border border-white/[0.08] bg-[rgb(15_23_42_/0.52)] p-5 backdrop-blur-sm">
@@ -450,6 +532,17 @@ export function JournalManager() {
               <TextAreaField label="Mistakes" value={formState.mistakes} onChange={(value) => updateForm("mistakes", value)} />
               <TextAreaField label="Lessons" value={formState.lessons} onChange={(value) => updateForm("lessons", value)} />
             </div>
+
+            {formWarnings.length > 0 ? (
+              <div className="rounded-2xl border border-amber-500/30 bg-amber-950/30 px-4 py-3 text-sm text-amber-100">
+                <p className="font-semibold">Soft checks (save still allowed)</p>
+                <ul className="mt-2 list-disc space-y-1 pl-5">
+                  {formWarnings.map((warning) => (
+                    <li key={warning}>{warning}</li>
+                  ))}
+                </ul>
+              </div>
+            ) : null}
 
             <div className="flex flex-wrap items-center gap-3">
               <button
@@ -608,6 +701,16 @@ export function JournalManager() {
                 <DetailCard label="Holding Days" value={selectedEntry.holdingDays.toString()} />
                 <DetailCard label="Entry Price" value={selectedEntry.entryPrice.toString()} />
                 <DetailCard label="Exit Price" value={selectedEntry.exitPrice?.toString() ?? "—"} />
+                <DetailCard label="Stop Loss" value={selectedEntry.stopLoss?.toString() ?? "—"} />
+                <DetailCard label="Target" value={selectedEntry.targetPrice?.toString() ?? "—"} />
+                <DetailCard
+                  label="Planned R:R"
+                  value={selectedEntry.plannedRr == null ? "—" : `${selectedEntry.plannedRr.toFixed(2)} : 1`}
+                />
+                <DetailCard
+                  label="Realized R"
+                  value={selectedEntry.realizedR == null ? "—" : `${selectedEntry.realizedR.toFixed(2)}R`}
+                />
                 <DetailCard label="Gross P&L" value={toCurrency(selectedEntry.grossPnl)} />
                 <DetailCard label="Net P&L" value={toCurrency(selectedEntry.netPnl)} />
                 <DetailCard label="P&L %" value={toPercent(selectedEntry.pnlPercent)} />
@@ -730,3 +833,85 @@ function LongTextCard({ title, body }: { title: string; body: string | null }) {
     </section>
   );
 }
+
+function RrEffectivenessBanner({
+  analytics,
+}: {
+  analytics: ReturnType<typeof aggregateJournalAnalytics>;
+}) {
+  if (analytics.closed === 0) {
+    return (
+      <div className="rounded-2xl border border-dashed border-white/[0.12] bg-black/20 px-4 py-3 text-sm text-slate-400">
+        Close a few trades with stop loss and target to unlock R:R effectiveness analysis.
+      </div>
+    );
+  }
+
+  if (analytics.rrEffectiveness === "insufficient_data") {
+    return (
+      <div className="rounded-2xl border border-white/[0.08] bg-black/20 px-4 py-3 text-sm text-slate-300">
+        Not enough closed trades with planned R:R (need SL + target) to compare win rate against breakeven.
+      </div>
+    );
+  }
+
+  const paying = analytics.rrEffectiveness === "paying";
+  return (
+    <div
+      className={`rounded-2xl border px-4 py-3 text-sm ${
+        paying
+          ? "border-emerald-500/30 bg-emerald-950/30 text-emerald-100"
+          : "border-rose-500/35 bg-rose-950/40 text-rose-100"
+      }`}
+    >
+      <p className="font-semibold">
+        {paying
+          ? "Your win rate clears the breakeven needed for your average planned R:R"
+          : "Your win rate does not clear the breakeven needed for your average planned R:R"}
+      </p>
+      <p className="mt-1 opacity-90">
+        Realized win rate {toPercent(analytics.winRatePercent)} vs breakeven{" "}
+        {toPercent(analytics.breakevenWinRatePercent)} at avg planned{" "}
+        {analytics.avgPlannedRr == null ? "—" : `${analytics.avgPlannedRr.toFixed(2)} : 1`}.
+      </p>
+    </div>
+  );
+}
+
+function ExtremeTradeCard({
+  title,
+  icon,
+  trade,
+  tone,
+}: {
+  title: string;
+  icon: React.ReactNode;
+  trade: { id: string; symbol: string; tradeDate: string; netPnl: number; realizedR: number | null } | null;
+  tone: "win" | "loss";
+}) {
+  return (
+    <article className="rounded-2xl border border-white/[0.08] bg-[rgb(15_23_42_/0.48)] p-4">
+      <div className="flex items-center gap-2">
+        {icon}
+        <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">{title}</p>
+      </div>
+      {trade ? (
+        <div className="mt-3">
+          <p className="text-lg font-semibold text-white">{trade.symbol}</p>
+          <p className="mt-1 text-xs text-slate-400">{trade.tradeDate}</p>
+          <p
+            className={`mt-2 text-sm font-medium ${
+              tone === "win" ? "text-emerald-300" : "text-rose-300"
+            }`}
+          >
+            {toCurrency(trade.netPnl)}
+            {trade.realizedR != null ? ` · ${trade.realizedR.toFixed(2)}R` : ""}
+          </p>
+        </div>
+      ) : (
+        <p className="mt-3 text-sm text-slate-500">No closed trades yet.</p>
+      )}
+    </article>
+  );
+}
+

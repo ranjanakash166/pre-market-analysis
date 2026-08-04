@@ -2,6 +2,7 @@ import { differenceInCalendarDays } from "date-fns";
 import { getSql } from "@/lib/db";
 import type { TradeJournalEntry, TradeJournalFilters } from "@/types/trading-journal";
 import type { TradeJournalEntryInput } from "@/lib/trading-journal-schema";
+import { plannedRewardRisk, realizedR } from "@/lib/trading-journal-analytics";
 
 type Sql = NonNullable<ReturnType<typeof getSql>>;
 
@@ -56,6 +57,8 @@ function deriveMetrics(row: TradeJournalRow) {
   const quantity = toNumber(row.quantity) ?? 0;
   const entryPrice = toNumber(row.entry_price) ?? 0;
   const exitPrice = toNumber(row.exit_price);
+  const stopLoss = toNumber(row.stop_loss);
+  const targetPrice = toNumber(row.target_price);
   const fees = toNumber(row.fees);
 
   const holdingDays = Math.max(
@@ -66,8 +69,19 @@ function deriveMetrics(row: TradeJournalRow) {
     ) + 1,
   );
 
+  const plannedRr = plannedRewardRisk(entryPrice, stopLoss, targetPrice);
+  const realizedRMultiple =
+    row.status === "closed" ? realizedR(row.side, entryPrice, stopLoss, exitPrice) : null;
+
   if (row.status !== "closed" || exitPrice == null || quantity <= 0 || entryPrice <= 0) {
-    return { holdingDays, grossPnl: null, netPnl: null, pnlPercent: null };
+    return {
+      holdingDays,
+      grossPnl: null,
+      netPnl: null,
+      pnlPercent: null,
+      plannedRr,
+      realizedR: realizedRMultiple,
+    };
   }
 
   const grossPnl =
@@ -81,6 +95,8 @@ function deriveMetrics(row: TradeJournalRow) {
     grossPnl,
     netPnl,
     pnlPercent,
+    plannedRr,
+    realizedR: realizedRMultiple,
   };
 }
 

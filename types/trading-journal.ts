@@ -37,6 +37,8 @@ export interface TradeJournalEntry {
   grossPnl: number | null;
   netPnl: number | null;
   pnlPercent: number | null;
+  plannedRr: number | null;
+  realizedR: number | null;
 }
 
 export interface TradeJournalListResponse {
