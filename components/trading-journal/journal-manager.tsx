@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { BookOpenText, Pencil, Plus, Search, Trash2, TrendingUp } from "lucide-react";
 import type {
   TradeInstrumentType,
@@ -163,6 +164,36 @@ export function JournalManager() {
   useEffect(() => {
     void loadEntries(filters);
   }, [filters]);
+
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    if (searchParams.get("prefill") !== "1") return;
+
+    const instrumentTypeRaw = searchParams.get("instrumentType");
+    const instrumentType: TradeInstrumentType =
+      instrumentTypeRaw === "futures" || instrumentTypeRaw === "options" || instrumentTypeRaw === "equity"
+        ? instrumentTypeRaw
+        : "equity";
+    const sideRaw = searchParams.get("side");
+    const side: TradeSide = sideRaw === "short" ? "short" : "long";
+
+    setEditingId(null);
+    setFormState({
+      ...EMPTY_FORM,
+      tradeDate: new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Kolkata" }),
+      symbol: (searchParams.get("symbol") ?? "").toUpperCase(),
+      instrumentType,
+      side,
+      quantity: searchParams.get("quantity") ?? "",
+      entryPrice: searchParams.get("entryPrice") ?? "",
+      stopLoss: searchParams.get("stopLoss") ?? "",
+      targetPrice: searchParams.get("targetPrice") ?? "",
+      status: "open",
+    });
+    setShowForm(true);
+    setError(null);
+  }, [searchParams]);
 
   const selectedEntry = useMemo(
     () => entries.find((entry) => entry.id === selectedEntryId) ?? null,

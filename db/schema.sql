@@ -251,3 +251,16 @@ CREATE INDEX IF NOT EXISTS trade_journal_entries_user_trade_date_idx
 
 CREATE INDEX IF NOT EXISTS trade_journal_entries_user_status_trade_date_idx
   ON trade_journal_entries (user_id, status, trade_date DESC, created_at DESC);
+
+-- ------------------------------
+-- User Risk Profiles (Position Sizing Calculator)
+-- ------------------------------
+
+CREATE TABLE IF NOT EXISTS user_risk_profiles (
+  user_id UUID PRIMARY KEY REFERENCES app_users (id) ON DELETE CASCADE,
+  capital NUMERIC(18, 2) NOT NULL CHECK (capital > 0),
+  default_risk_percent NUMERIC(6, 3) NOT NULL DEFAULT 2 CHECK (default_risk_percent > 0 AND default_risk_percent <= 100),
+  default_concurrent_positions INT NOT NULL DEFAULT 1 CHECK (default_concurrent_positions >= 1 AND default_concurrent_positions <= 50),
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);

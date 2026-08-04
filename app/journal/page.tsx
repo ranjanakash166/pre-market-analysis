@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { auth } from "@/auth";
 import { JournalManager } from "@/components/trading-journal/journal-manager";
 import { pageTitle } from "@/lib/branding";
@@ -21,7 +22,15 @@ export default async function JournalPage() {
 
   return (
     <main className="mx-auto max-w-7xl px-4 pb-16 pt-8 md:px-8 md:pt-10">
-      <JournalManager />
+      <Suspense
+        fallback={
+          <div className="rounded-2xl border border-white/[0.08] bg-black/20 px-4 py-8 text-sm text-slate-400">
+            Loading your journal…
+          </div>
+        }
+      >
+        <JournalManager />
+      </Suspense>
     </main>
   );
 }
