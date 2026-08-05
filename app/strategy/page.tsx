@@ -38,6 +38,12 @@ export default async function StrategyCatalogPage({ searchParams }: StrategyPage
           Structured playbooks with setup snapshots, strike selection, execution rules, and risk notes. Pick a strategy
           card to open the full implementation details.
         </p>
+        <Link
+          href="/options-builder"
+          className="mt-5 inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-amber-500 to-orange-600 px-4 py-2.5 text-sm font-bold text-slate-950 shadow-lg shadow-amber-500/25 transition hover:brightness-105"
+        >
+          Open interactive payoff builder (38 strategies)
+        </Link>
       </div>
 
       <div className="mb-6 flex flex-wrap gap-2">

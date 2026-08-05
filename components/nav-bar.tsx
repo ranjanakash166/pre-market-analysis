@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BookOpen, Calculator, CalendarDays, Compass, LayoutDashboard, Menu, NotebookPen, Radio, X } from "lucide-react";
+import { BookOpen, Calculator, CalendarDays, CandlestickChart, Compass, LayoutDashboard, Menu, NotebookPen, Radio, X } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
 import { SITE_NAME } from "@/lib/branding";
 
@@ -38,6 +38,7 @@ export function NavBar() {
   const onPriorDay = pathname === "/prior-day" || pathname.startsWith("/prior-day/");
   const onLearn = pathname === "/learn" || pathname.startsWith("/learn/");
   const onStrategy = pathname === "/strategy" || pathname.startsWith("/strategy/");
+  const onOptionsBuilder = pathname === "/options-builder";
   const onSubscribe = pathname === "/subscribe";
   const onBilling = pathname === "/account/billing";
   const isLoggedIn = status === "authenticated" && !!session?.user?.id;
@@ -151,6 +152,18 @@ export function NavBar() {
               >
                 <Compass className="h-4 w-4 opacity-80" aria-hidden />
                 <span className="hidden sm:inline">Strategy</span>
+              </Link>
+
+              <Link
+                href="/options-builder"
+                className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-medium transition ${
+                  onOptionsBuilder
+                    ? "bg-white/[0.07] text-amber-100 ring-1 ring-amber-500/25"
+                    : "text-slate-400 hover:bg-white/[0.05] hover:text-slate-200"
+                }`}
+              >
+                <CandlestickChart className="h-4 w-4 opacity-80" aria-hidden />
+                <span className="hidden lg:inline">Options Builder</span>
               </Link>
 
               {!onSubscribe ? (
@@ -341,6 +354,18 @@ export function NavBar() {
                   }`}
                 >
                   Strategy
+                </Link>
+
+                <Link
+                  href="/options-builder"
+                  onClick={closeMenu}
+                  className={`rounded-xl px-3 py-2 text-sm font-medium transition ${
+                    onOptionsBuilder
+                      ? "bg-white/[0.07] text-amber-100 ring-1 ring-amber-500/25"
+                      : "text-slate-300 hover:bg-white/[0.05] hover:text-slate-100"
+                  }`}
+                >
+                  Options Builder
                 </Link>
                 {!onSubscribe ? (
                   <Link
